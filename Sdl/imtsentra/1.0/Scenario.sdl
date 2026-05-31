@@ -1,0 +1,55 @@
+schema {
+    namespace: imtsentra
+    version: 1.0
+}
+
+enum NodeType {
+    OpenUrl
+    ClickElement
+    InputText
+    Wait
+    TakeScreenshot
+    CompareScreenshot
+    AssertText
+    AssertElement
+    AiValidation
+    ConditionalBranch
+    Loop
+}
+
+enum ExecutionStatus {
+    Pending
+    Running
+    Passed
+    Failed
+    Skipped
+    TimedOut
+}
+
+type ScenarioNode {
+    id: String!
+    type: NodeType!
+    label: String!
+    description: String
+    config: String
+    posX: Float
+    posY: Float
+}
+
+type ScenarioEdge {
+    id: String!
+    sourceNodeId: String!
+    targetNodeId: String!
+    condition: String
+    label: String
+}
+
+type Scenario {
+    id: String!
+    name: String!
+    description: String
+    nodes: [ScenarioNode]!
+    edges: [ScenarioEdge]!
+    createdAt: String!
+    updatedAt: String!
+}

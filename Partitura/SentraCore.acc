@@ -1,0 +1,64 @@
+# Sentra Core — ACF Component Assembly
+# Defines the wiring between core components
+
+assembly SentraCore {
+    version: 1.0
+
+    # Scenario Engine
+    component ScenarioGraph {
+        type: CScenarioGraphComp
+        interface: IScenarioGraph
+    }
+
+    component ScenarioExecutor {
+        type: CScenarioExecutorComp
+        interface: IScenarioExecutor
+    }
+
+    component NodeActionFactory {
+        type: CNodeActionFactory
+    }
+
+    # Execution Engine
+    component ExecutionEngine {
+        type: CExecutionEngineComp
+        interface: IExecutionEngine
+        config {
+            maxParallelExecutions: 4
+            defaultTimeoutMs: 30000
+            maxRetries: 2
+        }
+    }
+
+    # Image Comparison
+    component PixelDiffComparator {
+        type: CPixelDiffComparatorComp
+        interface: IImageComparator
+    }
+
+    # Baseline Management
+    component BaselineManager {
+        type: CBaselineManagerComp
+        interface: IBaselineManager
+    }
+
+    # Screenshot Storage
+    component ScreenshotStorage {
+        type: CScreenshotStorageComp
+        interface: IScreenshotStorage
+        config {
+            basePath: "${SENTRA_DATA_DIR}/screenshots"
+        }
+    }
+
+    # Application Map
+    component AppMapBuilder {
+        type: CAppMapBuilderComp
+        interface: IAppMapBuilder
+    }
+
+    # Wiring
+    wire ScenarioExecutor.graph -> ScenarioGraph
+    wire ScenarioExecutor.actionFactory -> NodeActionFactory
+    wire ExecutionEngine.executor -> ScenarioExecutor
+}

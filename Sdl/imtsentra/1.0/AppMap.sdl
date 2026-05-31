@@ -1,0 +1,43 @@
+schema {
+    namespace: imtsentra
+    version: 1.0
+}
+
+type AppScreen {
+    id: String!
+    url: String!
+    title: String!
+    screenshotPath: String
+    elements: [String]
+    discoveredAt: String!
+    lastSeenAt: String!
+    visitCount: Int!
+}
+
+type AppTransition {
+    id: String!
+    sourceScreenId: String!
+    targetScreenId: String!
+    action: String!
+    label: String
+    discoveredAt: String!
+}
+
+type AppMap {
+    id: String!
+    projectId: String!
+    screens: [AppScreen]!
+    transitions: [AppTransition]!
+    totalScreens: Int!
+    coveredScreens: Int!
+    updatedAt: String!
+}
+
+type CoverageReport {
+    appMapId: String!
+    totalScreens: Int!
+    testedScreens: Int!
+    coveragePercentage: Float!
+    untestedScreens: [AppScreen]!
+    suggestedScenarios: [String]
+}

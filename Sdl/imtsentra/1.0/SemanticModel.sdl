@@ -1,0 +1,56 @@
+schema {
+    namespace: imtsentra
+    version: 1.0
+}
+
+enum SemanticElementType {
+    Page
+    Dialog
+    Form
+    Button
+    Table
+    TreeView
+    Input
+    Menu
+    Notification
+    Section
+    Link
+    Image
+    Text
+    Container
+}
+
+type SemanticElement {
+    id: String!
+    type: SemanticElementType!
+    label: String!
+    description: String
+    ariaRole: String
+    ariaLabel: String
+    boundingBox: BoundingBox
+    children: [SemanticElement]
+    attributes: String
+}
+
+type BoundingBox {
+    x: Int!
+    y: Int!
+    width: Int!
+    height: Int!
+}
+
+type SemanticPage {
+    id: String!
+    url: String!
+    title: String!
+    elements: [SemanticElement]!
+    capturedAt: String!
+}
+
+type SemanticSnapshot {
+    id: String!
+    executionId: String!
+    nodeId: String!
+    page: SemanticPage!
+    createdAt: String!
+}
