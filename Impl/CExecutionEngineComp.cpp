@@ -19,9 +19,10 @@ std::string CExecutionEngineComp::queueExecution(
     qe.id = generateId();
     qe.graph = graph;
     qe.config = config;
+    std::string id = qe.id;
     m_queue.push(std::move(qe));
     m_cv.notify_one();
-    return qe.id;
+    return id;
 }
 
 std::vector<std::string> CExecutionEngineComp::queueParallelExecution(

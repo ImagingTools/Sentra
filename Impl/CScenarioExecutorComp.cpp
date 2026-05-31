@@ -20,8 +20,9 @@ std::string CScenarioExecutorComp::execute(
     state.graph = graph;
     state.config = config;
 
-    m_executions[state.id] = std::move(state);
-    notifyProgress(state.id, "", ExecutionStatus::Running, 0.0f);
+    std::string executionId = state.id;
+    m_executions[executionId] = std::move(state);
+    notifyProgress(executionId, "", ExecutionStatus::Running, 0.0f);
 
     // TODO: Actual execution logic
     // 1. Get topological order of nodes
@@ -32,7 +33,7 @@ std::string CScenarioExecutorComp::execute(
     //    d. Validate assertions
     //    e. Record NodeExecutionResult
 
-    return m_executions.rbegin()->second.id;
+    return executionId;
 }
 
 void CScenarioExecutorComp::stop(const std::string& executionId) {
