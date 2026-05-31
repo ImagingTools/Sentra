@@ -39,13 +39,27 @@ ComparisonResult CPixelDiffComparatorComp::Compare(
     int height = baselineSize.GetY();
     result.totalPixels = width * height;
 
+    int bitsPerPixel = baseline.GetPixelBitsCount();
+    if (bitsPerPixel % 8 != 0 || bitsPerPixel == 0) {
+        // Non-byte-aligned or unknown pixel format — cannot compare
+        result.diffPercentage = 100.0f;
+        result.changedPixels = result.totalPixels;
+        return result;
+    }
+    int bytesPerPixel = bitsPerPixel / 8;
+
+    // Per-pixel color distance threshold derived from config
+    // config.threshold is 0–1 representing maximum tolerable fraction of differing pixels,
+    // but for per-pixel comparison we use a fixed color distance threshold.
+    // Anti-aliasing tolerance raises the per-pixel threshold slightly.
+    int pixelThreshold = config.antiAliasingTolerance ? 3 : 1;
+
     // Use iipr::CBitmapOperations to calculate the pixel difference bitmap
     // then iterate through the result to count changed pixels,
     // skipping any configured ignore regions.
     for (int y = 0; y < height; ++y) {
         const auto* baselineRow = baseline.GetLinePtr(y);
         const auto* actualRow = actual.GetLinePtr(y);
-        int bytesPerPixel = baseline.GetPixelBitsCount() / 8;
 
         for (int x = 0; x < width; ++x) {
             if (IsInIgnoreRegion(x, y, config.ignoreRegions)) {
@@ -61,7 +75,7 @@ ComparisonResult CPixelDiffComparatorComp::Compare(
                 );
             }
 
-            if (diff > 0) {
+            if (diff > pixelThreshold) {
                 ++result.changedPixels;
             }
         }
