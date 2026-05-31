@@ -129,8 +129,8 @@ QString CAppMapBuilderComp::ToJson() const {
 }
 
 QString CAppMapBuilderComp::GenerateId() const {
-    auto us = QDateTime::currentDateTime().toMSecsSinceEpoch();
-    return QStringLiteral("map-") + QString::number(us);
+    auto ms = QDateTime::currentDateTime().toMSecsSinceEpoch();
+    return QStringLiteral("map-") + QString::number(ms);
 }
 
 QString CAppMapBuilderComp::NormalizeUrl(const QString& url) const {
