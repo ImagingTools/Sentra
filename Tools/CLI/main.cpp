@@ -103,7 +103,7 @@ CliOptions parseArgs(int argc, char* argv[]) {
 }
 
 int runCommand(const CliOptions& opts) {
-    std::cout << "[Sentra] ES_RUNNING scenario '" << opts.scenario
+    std::cout << "[Sentra] Running scenario '" << opts.scenario
               << "' in project '" << opts.project
               << "' (env: " << opts.environment << ")" << std::endl;
 
