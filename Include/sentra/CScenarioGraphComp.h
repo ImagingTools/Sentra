@@ -18,7 +18,8 @@ namespace sentra
  * \brief ACF component implementing IScenarioGraph
  *
  * Provides a directed graph implementation with support for
- * topological ordering, cycle detection, and JSON serialization.
+ * topological ordering, cycle detection, and archive-based
+ * serialization (\c iser::ISerializable).
  *
  * \ingroup sentra
  */
@@ -31,6 +32,7 @@ public:
 
     I_BEGIN_COMPONENT(CScenarioGraphComp)
         I_REGISTER_INTERFACE(IScenarioGraph);
+        I_REGISTER_INTERFACE(iser::ISerializable);
     I_END_COMPONENT
 
     // reimplemented (sentra::IScenarioGraph)
@@ -60,8 +62,8 @@ public:
     bool IsValid() const override;
     bool HasCycles() const override;
 
-    QString ToJson() const override;
-    bool FromJson(const QString& json) override;
+    // reimplemented (iser::ISerializable)
+    bool Serialize(iser::IArchive& archive) override;
 
 protected:
     // reimplemented (icomp::CComponentBase)
@@ -78,6 +80,10 @@ private:
         const QString& nodeId,
         QHash<QString, int>& visited
     ) const;
+
+    // Serialization helpers for the inline data records.
+    static bool SerializeNode(iser::IArchive& archive, ScenarioNode& node);
+    static bool SerializeEdge(iser::IArchive& archive, ScenarioEdge& edge);
 };
 
 } // namespace sentra

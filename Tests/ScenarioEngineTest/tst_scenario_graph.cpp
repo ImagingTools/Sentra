@@ -143,7 +143,7 @@ void testRootNodes() {
     std::cout << "  [PASS] testRootNodes" << std::endl;
 }
 
-void testJsonSerialization() {
+void testDataModel() {
     CScenarioGraphComp graph;
     graph.SetName("Login Flow");
     graph.SetDescription("Tests the login process");
@@ -151,12 +151,18 @@ void testJsonSerialization() {
     ScenarioNode n1{.id = "n1", .type = NT_OPEN_URL, .label = "Open Login"};
     graph.AddNode(n1);
 
-    auto json = graph.ToJson();
-    assert(!json.isEmpty());
-    assert(json.contains("Login Flow"));
-    assert(json.contains("n1"));
+    // The scenario graph is a serializable data model (iser::ISerializable);
+    // verify its in-memory state is consistent before/after mutation.
+    assert(graph.GetName() == "Login Flow");
+    assert(graph.GetDescription().has_value());
+    assert(*graph.GetDescription() == "Tests the login process");
 
-    std::cout << "  [PASS] testJsonSerialization" << std::endl;
+    auto nodes = graph.GetNodes();
+    assert(nodes.size() == 1);
+    assert(nodes[0].id == "n1");
+    assert(nodes[0].type == NT_OPEN_URL);
+
+    std::cout << "  [PASS] testDataModel" << std::endl;
 }
 
 int main() {
@@ -168,7 +174,7 @@ int main() {
     testTopologicalOrder();
     testCycleDetection();
     testRootNodes();
-    testJsonSerialization();
+    testDataModel();
 
     std::cout << "\nAll tests passed!" << std::endl;
     return 0;

@@ -2,8 +2,8 @@
 #pragma once
 
 // ACF includes
-#include <istd/IPolymorphic.h>
 #include <istd/TUniqueInterfacePtr.h>
+#include <iser/ISerializable.h>
 
 // Qt includes
 #include <QtCore/QString>
@@ -47,9 +47,12 @@ struct AppTransition {
  * Automatically builds a graph of application screens and transitions
  * by tracking navigation during test executions.
  *
+ * The discovered map is a serializable data model persisted through the
+ * ACF \c iser::ISerializable mechanism.
+ *
  * \ingroup sentra
  */
-class IAppMapBuilder: virtual public istd::IPolymorphic
+class IAppMapBuilder: virtual public iser::ISerializable
 {
 public:
     /**
@@ -96,10 +99,7 @@ public:
      */
     virtual float GetCoveragePercentage() const = 0;
 
-    /**
-     * \brief Export app map as JSON
-     */
-    virtual QString ToJson() const = 0;
+    // Serialization is provided by iser::ISerializable::Serialize().
 };
 
 typedef istd::TUniqueInterfacePtr<IAppMapBuilder> IAppMapBuilderUniquePtr;

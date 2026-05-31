@@ -33,6 +33,7 @@ public:
 
     I_BEGIN_COMPONENT(CAppMapBuilderComp)
         I_REGISTER_INTERFACE(IAppMapBuilder);
+        I_REGISTER_INTERFACE(iser::ISerializable);
     I_END_COMPONENT
 
     // reimplemented (sentra::IAppMapBuilder)
@@ -52,7 +53,9 @@ public:
     QList<AppTransition> GetTransitions() const override;
     QList<AppScreen> GetUntestedScreens() const override;
     float GetCoveragePercentage() const override;
-    QString ToJson() const override;
+
+    // reimplemented (iser::ISerializable)
+    bool Serialize(iser::IArchive& archive) override;
 
 private:
     mutable QMutex m_mutex;
@@ -61,6 +64,10 @@ private:
 
     QString GenerateId() const;
     QString NormalizeUrl(const QString& url) const;
+
+    // Serialization helpers for the inline data records.
+    static bool SerializeScreen(iser::IArchive& archive, AppScreen& screen);
+    static bool SerializeTransition(iser::IArchive& archive, AppTransition& transition);
 };
 
 } // namespace sentra

@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #include <sentra/CScenarioGraphComp.h>
 
+// ACF includes
+#include <istd/CChangeNotifier.h>
+#include <iser/IArchive.h>
+#include <iser/CArchiveTag.h>
+
 // Qt includes
 #include <QtCore/QDateTime>
 
@@ -228,40 +233,199 @@ bool CScenarioGraphComp::DetectCyclesDFS(
     return false;
 }
 
-QString CScenarioGraphComp::ToJson() const {
-    // Simplified JSON serialization
-    QString json = QStringLiteral("{");
-    json += QStringLiteral("\"id\":\"") + m_id + QStringLiteral("\",");
-    json += QStringLiteral("\"name\":\"") + m_name + QStringLiteral("\",");
-    if (m_description) json += QStringLiteral("\"description\":\"") + *m_description + QStringLiteral("\",");
-    json += QStringLiteral("\"nodes\":[");
-    bool first = true;
-    for (const auto& node : m_nodes) {
-        if (!first) json += QLatin1Char(',');
-        json += QStringLiteral("{\"id\":\"") + node.id + QStringLiteral("\",")
-              + QStringLiteral("\"type\":") + QString::number(static_cast<int>(node.type)) + QStringLiteral(",")
-              + QStringLiteral("\"label\":\"") + node.label + QStringLiteral("\",")
-              + QStringLiteral("\"posX\":") + QString::number(node.posX) + QStringLiteral(",")
-              + QStringLiteral("\"posY\":") + QString::number(node.posY) + QStringLiteral("}");
-        first = false;
+bool CScenarioGraphComp::Serialize(iser::IArchive& archive)
+{
+    istd::CChangeNotifier changeNotifier(archive.IsStoring() ? nullptr : this);
+
+    bool retVal = true;
+
+    static iser::CArchiveTag idTag("Id", "Scenario graph identifier", iser::CArchiveTag::TT_LEAF);
+    retVal = retVal && archive.BeginTag(idTag);
+    retVal = retVal && archive.Process(m_id);
+    retVal = retVal && archive.EndTag(idTag);
+
+    static iser::CArchiveTag nameTag("Name", "Scenario name", iser::CArchiveTag::TT_LEAF);
+    retVal = retVal && archive.BeginTag(nameTag);
+    retVal = retVal && archive.Process(m_name);
+    retVal = retVal && archive.EndTag(nameTag);
+
+    QString description = m_description.value_or(QString());
+    static iser::CArchiveTag descriptionTag("Description", "Scenario description", iser::CArchiveTag::TT_LEAF);
+    retVal = retVal && archive.BeginTag(descriptionTag);
+    retVal = retVal && archive.Process(description);
+    retVal = retVal && archive.EndTag(descriptionTag);
+    if (!archive.IsStoring()){
+        if (description.isEmpty()){
+            m_description.reset();
+        }
+        else {
+            m_description = description;
+        }
     }
-    json += QStringLiteral("],\"edges\":[");
-    first = true;
-    for (const auto& edge : m_edges) {
-        if (!first) json += QLatin1Char(',');
-        json += QStringLiteral("{\"id\":\"") + edge.id + QStringLiteral("\",")
-              + QStringLiteral("\"sourceNodeId\":\"") + edge.sourceNodeId + QStringLiteral("\",")
-              + QStringLiteral("\"targetNodeId\":\"") + edge.targetNodeId + QStringLiteral("\"}");
-        first = false;
+
+    // Nodes collection
+    {
+        QList<ScenarioNode> nodes = m_nodes.values();
+        int count = nodes.size();
+        if (!archive.IsStoring()){
+            m_nodes.clear();
+            count = 0;
+        }
+
+        iser::CArchiveTag nodesTag("Nodes", "Scenario nodes", iser::CArchiveTag::TT_MULTIPLE);
+        iser::CArchiveTag nodeTag("Node", "Scenario node", iser::CArchiveTag::TT_GROUP, &nodesTag);
+
+        retVal = retVal && archive.BeginMultiTag(nodesTag, nodeTag, count);
+
+        for (int index = 0; index < count; ++index){
+            retVal = retVal && archive.BeginTag(nodeTag);
+
+            ScenarioNode node;
+            if (archive.IsStoring()){
+                node = nodes[index];
+            }
+
+            retVal = retVal && SerializeNode(archive, node);
+
+            retVal = retVal && archive.EndTag(nodeTag);
+
+            if (retVal && !archive.IsStoring()){
+                m_nodes.insert(node.id, node);
+            }
+        }
+
+        retVal = retVal && archive.EndTag(nodesTag);
     }
-    json += QStringLiteral("]}");
-    return json;
+
+    // Edges collection
+    {
+        QList<ScenarioEdge> edges = m_edges.values();
+        int count = edges.size();
+        if (!archive.IsStoring()){
+            m_edges.clear();
+            count = 0;
+        }
+
+        iser::CArchiveTag edgesTag("Edges", "Scenario edges", iser::CArchiveTag::TT_MULTIPLE);
+        iser::CArchiveTag edgeTag("Edge", "Scenario edge", iser::CArchiveTag::TT_GROUP, &edgesTag);
+
+        retVal = retVal && archive.BeginMultiTag(edgesTag, edgeTag, count);
+
+        for (int index = 0; index < count; ++index){
+            retVal = retVal && archive.BeginTag(edgeTag);
+
+            ScenarioEdge edge;
+            if (archive.IsStoring()){
+                edge = edges[index];
+            }
+
+            retVal = retVal && SerializeEdge(archive, edge);
+
+            retVal = retVal && archive.EndTag(edgeTag);
+
+            if (retVal && !archive.IsStoring()){
+                m_edges.insert(edge.id, edge);
+            }
+        }
+
+        retVal = retVal && archive.EndTag(edgesTag);
+    }
+
+    return retVal;
 }
 
-bool CScenarioGraphComp::FromJson(const QString& json) {
-    // TODO: Implement JSON deserialization
-    // Will use Qt JSON (QJsonDocument)
-    return false;
+bool CScenarioGraphComp::SerializeNode(iser::IArchive& archive, ScenarioNode& node)
+{
+    bool retVal = true;
+
+    static iser::CArchiveTag idTag("Id", "Node identifier", iser::CArchiveTag::TT_LEAF);
+    retVal = retVal && archive.BeginTag(idTag);
+    retVal = retVal && archive.Process(node.id);
+    retVal = retVal && archive.EndTag(idTag);
+
+    int type = node.type;
+    static iser::CArchiveTag typeTag("Type", "Node type", iser::CArchiveTag::TT_LEAF);
+    retVal = retVal && archive.BeginTag(typeTag);
+    retVal = retVal && archive.Process(type);
+    retVal = retVal && archive.EndTag(typeTag);
+    if (!archive.IsStoring()){
+        node.type = static_cast<NodeType>(type);
+    }
+
+    static iser::CArchiveTag labelTag("Label", "Node label", iser::CArchiveTag::TT_LEAF);
+    retVal = retVal && archive.BeginTag(labelTag);
+    retVal = retVal && archive.Process(node.label);
+    retVal = retVal && archive.EndTag(labelTag);
+
+    QString description = node.description.value_or(QString());
+    static iser::CArchiveTag descriptionTag("Description", "Node description", iser::CArchiveTag::TT_LEAF);
+    retVal = retVal && archive.BeginTag(descriptionTag);
+    retVal = retVal && archive.Process(description);
+    retVal = retVal && archive.EndTag(descriptionTag);
+    if (!archive.IsStoring()){
+        node.description = description.isEmpty() ? std::optional<QString>() : description;
+    }
+
+    QString config = node.config.value_or(QString());
+    static iser::CArchiveTag configTag("Config", "Node JSON configuration", iser::CArchiveTag::TT_LEAF);
+    retVal = retVal && archive.BeginTag(configTag);
+    retVal = retVal && archive.Process(config);
+    retVal = retVal && archive.EndTag(configTag);
+    if (!archive.IsStoring()){
+        node.config = config.isEmpty() ? std::optional<QString>() : config;
+    }
+
+    static iser::CArchiveTag posXTag("PosX", "Node X position", iser::CArchiveTag::TT_LEAF);
+    retVal = retVal && archive.BeginTag(posXTag);
+    retVal = retVal && archive.Process(node.posX);
+    retVal = retVal && archive.EndTag(posXTag);
+
+    static iser::CArchiveTag posYTag("PosY", "Node Y position", iser::CArchiveTag::TT_LEAF);
+    retVal = retVal && archive.BeginTag(posYTag);
+    retVal = retVal && archive.Process(node.posY);
+    retVal = retVal && archive.EndTag(posYTag);
+
+    return retVal;
+}
+
+bool CScenarioGraphComp::SerializeEdge(iser::IArchive& archive, ScenarioEdge& edge)
+{
+    bool retVal = true;
+
+    static iser::CArchiveTag idTag("Id", "Edge identifier", iser::CArchiveTag::TT_LEAF);
+    retVal = retVal && archive.BeginTag(idTag);
+    retVal = retVal && archive.Process(edge.id);
+    retVal = retVal && archive.EndTag(idTag);
+
+    static iser::CArchiveTag sourceTag("SourceNodeId", "Source node identifier", iser::CArchiveTag::TT_LEAF);
+    retVal = retVal && archive.BeginTag(sourceTag);
+    retVal = retVal && archive.Process(edge.sourceNodeId);
+    retVal = retVal && archive.EndTag(sourceTag);
+
+    static iser::CArchiveTag targetTag("TargetNodeId", "Target node identifier", iser::CArchiveTag::TT_LEAF);
+    retVal = retVal && archive.BeginTag(targetTag);
+    retVal = retVal && archive.Process(edge.targetNodeId);
+    retVal = retVal && archive.EndTag(targetTag);
+
+    QString condition = edge.condition.value_or(QString());
+    static iser::CArchiveTag conditionTag("Condition", "Edge condition", iser::CArchiveTag::TT_LEAF);
+    retVal = retVal && archive.BeginTag(conditionTag);
+    retVal = retVal && archive.Process(condition);
+    retVal = retVal && archive.EndTag(conditionTag);
+    if (!archive.IsStoring()){
+        edge.condition = condition.isEmpty() ? std::optional<QString>() : condition;
+    }
+
+    QString label = edge.label.value_or(QString());
+    static iser::CArchiveTag labelTag("Label", "Edge label", iser::CArchiveTag::TT_LEAF);
+    retVal = retVal && archive.BeginTag(labelTag);
+    retVal = retVal && archive.Process(label);
+    retVal = retVal && archive.EndTag(labelTag);
+    if (!archive.IsStoring()){
+        edge.label = label.isEmpty() ? std::optional<QString>() : label;
+    }
+
+    return retVal;
 }
 
 } // namespace sentra

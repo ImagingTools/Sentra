@@ -3,8 +3,8 @@
 
 // ACF includes
 #include <istd/istd.h>
-#include <istd/IPolymorphic.h>
 #include <istd/TUniqueInterfacePtr.h>
+#include <iser/ISerializable.h>
 
 // Qt includes
 #include <QtCore/QString>
@@ -79,9 +79,13 @@ struct ScenarioEdge {
  * Manages the directed graph structure of a test scenario.
  * Supports DAG with conditional branches and loops.
  *
+ * The graph is a serializable data model: its state (identification,
+ * nodes and edges) is persisted through the ACF \c iser::ISerializable
+ * mechanism.
+ *
  * \ingroup sentra
  */
-class IScenarioGraph: virtual public istd::IPolymorphic
+class IScenarioGraph: virtual public iser::ISerializable
 {
 public:
     // Graph identification
@@ -115,9 +119,7 @@ public:
     virtual bool IsValid() const = 0;
     virtual bool HasCycles() const = 0;
 
-    // Serialization
-    virtual QString ToJson() const = 0;
-    virtual bool FromJson(const QString& json) = 0;
+    // Serialization is provided by iser::ISerializable::Serialize().
 };
 
 typedef istd::TUniqueInterfacePtr<IScenarioGraph> IScenarioGraphUniquePtr;
