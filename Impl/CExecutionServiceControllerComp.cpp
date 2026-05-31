@@ -1,47 +1,49 @@
-// Placeholder for GraphQL Execution Service implementation
-#include "imtsentragql/CExecutionServiceControllerComp.h"
+// SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
+#include <imtsentragql/CExecutionServiceControllerComp.h>
 
-namespace imtsentra {
-namespace gql {
+namespace imtsentra
+{
+namespace gql
+{
 
 CExecutionServiceControllerComp::CExecutionServiceControllerComp() = default;
 CExecutionServiceControllerComp::~CExecutionServiceControllerComp() = default;
 
-std::string CExecutionServiceControllerComp::getExecution(const std::string& executionId) const {
+std::string CExecutionServiceControllerComp::GetExecution(const std::string& executionId) const {
     // TODO: Get execution details
     return "{}";
 }
 
-std::string CExecutionServiceControllerComp::getNodeResult(const std::string& executionId, const std::string& nodeId) const {
+std::string CExecutionServiceControllerComp::GetNodeResult(const std::string& executionId, const std::string& nodeId) const {
     // TODO: Get specific node result
     return "{}";
 }
 
-std::string CExecutionServiceControllerComp::listExecutions(const std::string& scenarioId) const {
+std::string CExecutionServiceControllerComp::ListExecutions(const std::string& scenarioId) const {
     // TODO: List executions for scenario
     return "[]";
 }
 
-std::string CExecutionServiceControllerComp::executeScenario(const std::string& scenarioId, const std::string& configJson) {
+std::string CExecutionServiceControllerComp::ExecuteScenario(const std::string& scenarioId, const std::string& configJson) {
     // TODO: Start scenario execution
     return "{}";
 }
 
-bool CExecutionServiceControllerComp::stopExecution(const std::string& executionId) {
+bool CExecutionServiceControllerComp::StopExecution(const std::string& executionId) {
     // TODO: Stop execution
     return false;
 }
 
-std::string CExecutionServiceControllerComp::retryExecution(const std::string& executionId, const std::string& fromNodeId) {
+std::string CExecutionServiceControllerComp::RetryExecution(const std::string& executionId, const std::string& fromNodeId) {
     // TODO: Retry from node
     return "{}";
 }
 
-void CExecutionServiceControllerComp::subscribeExecutionProgress(const std::string& executionId, ProgressHandler handler) {
+void CExecutionServiceControllerComp::SubscribeExecutionProgress(const std::string& executionId, ProgressHandler handler) {
     // TODO: Register subscription
 }
 
-void CExecutionServiceControllerComp::subscribeNodeCompleted(const std::string& executionId, ProgressHandler handler) {
+void CExecutionServiceControllerComp::SubscribeNodeCompleted(const std::string& executionId, ProgressHandler handler) {
     // TODO: Register subscription
 }
 

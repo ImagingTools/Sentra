@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #pragma once
 
 #include <string>
@@ -5,27 +6,29 @@
 #include <optional>
 #include <functional>
 
-namespace imtsentra {
+namespace imtsentra
+{
 
 /**
- * @brief Browser command types for the Playwright controller
+ * \brief Browser command types for the Playwright controller
  */
-enum class BrowserCommand {
-    Navigate,
-    Click,
-    Type,
-    Screenshot,
-    GetDom,
-    GetAccessibilityTree,
-    WaitFor,
-    Evaluate,
-    Select,
-    Hover,
-    Scroll
+enum BrowserCommand
+{
+    BC_NAVIGATE,
+    BC_CLICK,
+    BC_TYPE,
+    BC_SCREENSHOT,
+    BC_GET_DOM,
+    BC_GET_ACCESSIBILITY_TREE,
+    BC_WAIT_FOR,
+    BC_EVALUATE,
+    BC_SELECT,
+    BC_HOVER,
+    BC_SCROLL
 };
 
 /**
- * @brief Request to send to the browser controller
+ * \brief Request to send to the browser controller
  */
 struct BrowserRequest {
     BrowserCommand command;
@@ -34,7 +37,7 @@ struct BrowserRequest {
 };
 
 /**
- * @brief Response from the browser controller
+ * \brief Response from the browser controller
  */
 struct BrowserResponse {
     bool success;
@@ -44,7 +47,7 @@ struct BrowserResponse {
 };
 
 /**
- * @brief Interface for browser controller communication
+ * \brief Interface for browser controller communication
  *
  * Communicates with Playwright via WebSocket JSON-RPC protocol.
  * Provides navigation, interaction, screenshot capture, and DOM access.
@@ -54,48 +57,48 @@ public:
     virtual ~IBrowserController() = default;
 
     /**
-     * @brief Connect to the Playwright controller
-     * @param endpoint WebSocket endpoint URL
-     * @return true if connection successful
+     * \brief Connect to the Playwright controller
+     * \param endpoint WebSocket endpoint URL
+     * \return true if connection successful
      */
-    virtual bool connect(const std::string& endpoint) = 0;
+    virtual bool Connect(const std::string& endpoint) = 0;
 
     /**
-     * @brief Disconnect from the browser controller
+     * \brief Disconnect from the browser controller
      */
-    virtual void disconnect() = 0;
+    virtual void Disconnect() = 0;
 
     /**
-     * @brief Check if connected
+     * \brief Check if connected
      */
-    virtual bool isConnected() const = 0;
+    virtual bool IsConnected() const = 0;
 
     /**
-     * @brief Send a command to the browser
+     * \brief Send a command to the browser
      */
-    virtual BrowserResponse sendCommand(const BrowserRequest& request) = 0;
+    virtual BrowserResponse SendCommand(const BrowserRequest& request) = 0;
 
     // Convenience methods
-    virtual BrowserResponse navigate(const std::string& url) = 0;
-    virtual BrowserResponse click(const std::string& selector) = 0;
-    virtual BrowserResponse type(const std::string& selector, const std::string& text) = 0;
-    virtual BrowserResponse screenshot(bool fullPage = false) = 0;
-    virtual BrowserResponse getDom() = 0;
-    virtual BrowserResponse getAccessibilityTree() = 0;
-    virtual BrowserResponse waitFor(const std::string& condition, int timeoutMs = 5000) = 0;
+    virtual BrowserResponse Navigate(const std::string& url) = 0;
+    virtual BrowserResponse Click(const std::string& selector) = 0;
+    virtual BrowserResponse Type(const std::string& selector, const std::string& text) = 0;
+    virtual BrowserResponse Screenshot(bool fullPage = false) = 0;
+    virtual BrowserResponse GetDom() = 0;
+    virtual BrowserResponse GetAccessibilityTree() = 0;
+    virtual BrowserResponse WaitFor(const std::string& condition, int timeoutMs = 5000) = 0;
 
     /**
-     * @brief Launch browser with given configuration
-     * @param headless Whether to run in headless mode
-     * @param viewportWidth Viewport width
-     * @param viewportHeight Viewport height
+     * \brief Launch browser with given configuration
+     * \param headless Whether to run in headless mode
+     * \param viewportWidth Viewport width
+     * \param viewportHeight Viewport height
      */
-    virtual bool launch(bool headless = true, int viewportWidth = 1920, int viewportHeight = 1080) = 0;
+    virtual bool Launch(bool headless = true, int viewportWidth = 1920, int viewportHeight = 1080) = 0;
 
     /**
-     * @brief Close the browser
+     * \brief Close the browser
      */
-    virtual void close() = 0;
+    virtual void Close() = 0;
 };
 
 } // namespace imtsentra

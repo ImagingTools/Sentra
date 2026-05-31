@@ -1,16 +1,18 @@
+// SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #pragma once
 
-#include "IExecutionEngine.h"
+#include <imtsentra/IExecutionEngine.h>
 #include <mutex>
 #include <queue>
 #include <thread>
 #include <condition_variable>
 #include <atomic>
 
-namespace imtsentra {
+namespace imtsentra
+{
 
 /**
- * @brief ACF Component implementing IExecutionEngine
+ * \brief ACF Component implementing IExecutionEngine
  *
  * Orchestrates scenario execution with support for parallel runs,
  * retry logic, and timeout management.
@@ -20,30 +22,30 @@ public:
     CExecutionEngineComp();
     ~CExecutionEngineComp() override;
 
-    std::string queueExecution(
+    std::string QueueExecution(
         std::shared_ptr<IScenarioGraph> graph,
         const ExecutionConfig& config
     ) override;
 
-    std::vector<std::string> queueParallelExecution(
+    std::vector<std::string> QueueParallelExecution(
         const std::vector<std::shared_ptr<IScenarioGraph>>& graphs,
         const ExecutionConfig& config
     ) override;
 
-    void cancelExecution(const std::string& executionId) override;
-    int getActiveExecutionCount() const override;
-    EngineConfig getConfig() const override;
-    void setConfig(const EngineConfig& config) override;
+    void CancelExecution(const std::string& executionId) override;
+    int GetActiveExecutionCount() const override;
+    EngineConfig GetConfig() const override;
+    void SetConfig(const EngineConfig& config) override;
 
     /**
-     * @brief Start the execution engine worker threads
+     * \brief Start the execution engine worker threads
      */
-    void start();
+    void Start();
 
     /**
-     * @brief Stop the engine and wait for running executions to complete
+     * \brief Stop the engine and wait for running executions to complete
      */
-    void stop();
+    void Stop();
 
 private:
     struct QueuedExecution {
@@ -60,8 +62,8 @@ private:
     std::atomic<bool> m_running{false};
     std::atomic<int> m_activeCount{0};
 
-    void workerLoop();
-    std::string generateId() const;
+    void WorkerLoop();
+    std::string GenerateId() const;
 };
 
 } // namespace imtsentra

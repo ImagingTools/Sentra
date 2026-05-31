@@ -1,11 +1,13 @@
+// SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #pragma once
 
-#include "IScreenshotStorage.h"
+#include <imtsentra/IScreenshotStorage.h>
 
-namespace imtsentra {
+namespace imtsentra
+{
 
 /**
- * @brief ACF Component implementing IScreenshotStorage
+ * \brief ACF Component implementing IScreenshotStorage
  *
  * Manages filesystem-based screenshot storage with structured layout.
  */
@@ -14,41 +16,41 @@ public:
     explicit CScreenshotStorageComp(const std::string& basePath);
     ~CScreenshotStorageComp() override;
 
-    std::string storeExecutionScreenshot(
+    std::string StoreExecutionScreenshot(
         const std::string& executionId,
         const std::string& nodeId,
         const std::vector<uint8_t>& imageData
     ) override;
 
-    std::string storeBaselineScreenshot(
+    std::string StoreBaselineScreenshot(
         const std::string& scenarioId,
         const std::string& nodeId,
         const std::vector<uint8_t>& imageData
     ) override;
 
-    std::string storeDiffImage(
+    std::string StoreDiffImage(
         const std::string& executionId,
         const std::string& nodeId,
         const std::vector<uint8_t>& imageData
     ) override;
 
-    std::optional<std::string> getExecutionScreenshotPath(
+    std::optional<std::string> GetExecutionScreenshotPath(
         const std::string& executionId,
         const std::string& nodeId
     ) const override;
 
-    std::optional<std::string> getBaselineScreenshotPath(
+    std::optional<std::string> GetBaselineScreenshotPath(
         const std::string& scenarioId,
         const std::string& nodeId
     ) const override;
 
-    void deleteExecutionArtifacts(const std::string& executionId) override;
-    size_t getTotalStorageSize() const override;
+    void DeleteExecutionArtifacts(const std::string& executionId) override;
+    size_t GetTotalStorageSize() const override;
 
 private:
     std::string m_basePath;
 
-    std::string ensureDirectory(const std::string& path) const;
+    std::string EnsureDirectory(const std::string& path) const;
 };
 
 } // namespace imtsentra

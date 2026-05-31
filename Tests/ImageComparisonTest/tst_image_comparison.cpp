@@ -1,13 +1,14 @@
+// SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #include <cassert>
 #include <iostream>
 #include <string>
-#include "imtsentra/CPixelDiffComparatorComp.h"
+#include <imtsentra/CPixelDiffComparatorComp.h>
 
 using namespace imtsentra;
 
 void testComparisonAlgorithm() {
     CPixelDiffComparatorComp comparator;
-    assert(comparator.getAlgorithm() == ComparisonAlgorithm::PixelDiff);
+    assert(comparator.GetAlgorithm() == CA_PIXEL_DIFF);
     std::cout << "  [PASS] testComparisonAlgorithm" << std::endl;
 }
 
@@ -18,7 +19,7 @@ void testCompareIdenticalImages() {
 
     // TODO: Create test images and verify comparison
     // For now, test that the interface works without crashing
-    auto result = comparator.compare("nonexistent1.png", "nonexistent2.png", config);
+    auto result = comparator.Compare("nonexistent1.png", "nonexistent2.png", config);
     // Result will indicate failure since files don't exist
     assert(result.diffPercentage >= 0.0f);
 

@@ -1,15 +1,17 @@
+// SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #pragma once
 
-#include "INodeAction.h"
-#include "IScenarioGraph.h"
+#include <imtsentra/INodeAction.h>
+#include <imtsentra/IScenarioGraph.h>
 #include <memory>
 #include <unordered_map>
 #include <functional>
 
-namespace imtsentra {
+namespace imtsentra
+{
 
 /**
- * @brief Factory for creating INodeAction instances by NodeType
+ * \brief Factory for creating INodeAction instances by NodeType
  */
 class CNodeActionFactory {
 public:
@@ -19,24 +21,24 @@ public:
     ~CNodeActionFactory();
 
     /**
-     * @brief Create an action for the given node type
+     * \brief Create an action for the given node type
      */
-    std::unique_ptr<INodeAction> createAction(NodeType type) const;
+    std::unique_ptr<INodeAction> CreateAction(NodeType type) const;
 
     /**
-     * @brief Register a custom action creator for a node type
+     * \brief Register a custom action creator for a node type
      */
-    void registerAction(NodeType type, ActionCreator creator);
+    void RegisterAction(NodeType type, ActionCreator creator);
 
     /**
-     * @brief Check if an action is registered for the given type
+     * \brief Check if an action is registered for the given type
      */
-    bool hasAction(NodeType type) const;
+    bool HasAction(NodeType type) const;
 
 private:
     std::unordered_map<int, ActionCreator> m_creators;
 
-    void registerDefaultActions();
+    void RegisterDefaultActions();
 };
 
 } // namespace imtsentra

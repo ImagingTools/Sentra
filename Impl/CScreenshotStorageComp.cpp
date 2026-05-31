@@ -1,10 +1,12 @@
-#include "imtsentra/CScreenshotStorageComp.h"
+// SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
+#include <imtsentra/CScreenshotStorageComp.h>
 #include <fstream>
 #include <filesystem>
 
 namespace fs = std::filesystem;
 
-namespace imtsentra {
+namespace imtsentra
+{
 
 CScreenshotStorageComp::CScreenshotStorageComp(const std::string& basePath)
     : m_basePath(basePath) {
@@ -13,12 +15,12 @@ CScreenshotStorageComp::CScreenshotStorageComp(const std::string& basePath)
 
 CScreenshotStorageComp::~CScreenshotStorageComp() = default;
 
-std::string CScreenshotStorageComp::storeExecutionScreenshot(
+std::string CScreenshotStorageComp::StoreExecutionScreenshot(
     const std::string& executionId,
     const std::string& nodeId,
     const std::vector<uint8_t>& imageData
 ) {
-    auto dir = ensureDirectory(m_basePath + "/executions/" + executionId + "/" + nodeId);
+    auto dir = EnsureDirectory(m_basePath + "/executions/" + executionId + "/" + nodeId);
     auto path = dir + "/actual.png";
 
     std::ofstream file(path, std::ios::binary);
@@ -27,12 +29,12 @@ std::string CScreenshotStorageComp::storeExecutionScreenshot(
     return path;
 }
 
-std::string CScreenshotStorageComp::storeBaselineScreenshot(
+std::string CScreenshotStorageComp::StoreBaselineScreenshot(
     const std::string& scenarioId,
     const std::string& nodeId,
     const std::vector<uint8_t>& imageData
 ) {
-    auto dir = ensureDirectory(m_basePath + "/baselines/" + scenarioId + "/" + nodeId);
+    auto dir = EnsureDirectory(m_basePath + "/baselines/" + scenarioId + "/" + nodeId);
     auto path = dir + "/baseline.png";
 
     std::ofstream file(path, std::ios::binary);
@@ -41,12 +43,12 @@ std::string CScreenshotStorageComp::storeBaselineScreenshot(
     return path;
 }
 
-std::string CScreenshotStorageComp::storeDiffImage(
+std::string CScreenshotStorageComp::StoreDiffImage(
     const std::string& executionId,
     const std::string& nodeId,
     const std::vector<uint8_t>& imageData
 ) {
-    auto dir = ensureDirectory(m_basePath + "/diffs/" + executionId + "/" + nodeId);
+    auto dir = EnsureDirectory(m_basePath + "/diffs/" + executionId + "/" + nodeId);
     auto path = dir + "/diff.png";
 
     std::ofstream file(path, std::ios::binary);
@@ -55,7 +57,7 @@ std::string CScreenshotStorageComp::storeDiffImage(
     return path;
 }
 
-std::optional<std::string> CScreenshotStorageComp::getExecutionScreenshotPath(
+std::optional<std::string> CScreenshotStorageComp::GetExecutionScreenshotPath(
     const std::string& executionId,
     const std::string& nodeId
 ) const {
@@ -64,7 +66,7 @@ std::optional<std::string> CScreenshotStorageComp::getExecutionScreenshotPath(
     return std::nullopt;
 }
 
-std::optional<std::string> CScreenshotStorageComp::getBaselineScreenshotPath(
+std::optional<std::string> CScreenshotStorageComp::GetBaselineScreenshotPath(
     const std::string& scenarioId,
     const std::string& nodeId
 ) const {
@@ -73,7 +75,7 @@ std::optional<std::string> CScreenshotStorageComp::getBaselineScreenshotPath(
     return std::nullopt;
 }
 
-void CScreenshotStorageComp::deleteExecutionArtifacts(const std::string& executionId) {
+void CScreenshotStorageComp::DeleteExecutionArtifacts(const std::string& executionId) {
     auto execPath = m_basePath + "/executions/" + executionId;
     auto diffPath = m_basePath + "/diffs/" + executionId;
 
@@ -81,7 +83,7 @@ void CScreenshotStorageComp::deleteExecutionArtifacts(const std::string& executi
     if (fs::exists(diffPath)) fs::remove_all(diffPath);
 }
 
-size_t CScreenshotStorageComp::getTotalStorageSize() const {
+size_t CScreenshotStorageComp::GetTotalStorageSize() const {
     size_t total = 0;
     for (const auto& entry : fs::recursive_directory_iterator(m_basePath)) {
         if (entry.is_regular_file()) {
@@ -91,7 +93,7 @@ size_t CScreenshotStorageComp::getTotalStorageSize() const {
     return total;
 }
 
-std::string CScreenshotStorageComp::ensureDirectory(const std::string& path) const {
+std::string CScreenshotStorageComp::EnsureDirectory(const std::string& path) const {
     fs::create_directories(path);
     return path;
 }

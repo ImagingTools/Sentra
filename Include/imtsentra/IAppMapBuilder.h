@@ -1,13 +1,15 @@
+// SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #pragma once
 
 #include <string>
 #include <vector>
 #include <optional>
 
-namespace imtsentra {
+namespace imtsentra
+{
 
 /**
- * @brief Represents a screen/page in the application map
+ * \brief Represents a screen/page in the application map
  */
 struct AppScreen {
     std::string id;
@@ -21,7 +23,7 @@ struct AppScreen {
 };
 
 /**
- * @brief Represents a transition between screens
+ * \brief Represents a transition between screens
  */
 struct AppTransition {
     std::string id;
@@ -33,7 +35,7 @@ struct AppTransition {
 };
 
 /**
- * @brief Interface for building and managing the application map
+ * \brief Interface for building and managing the application map
  *
  * Automatically builds a graph of application screens and transitions
  * by tracking navigation during test executions.
@@ -43,53 +45,53 @@ public:
     virtual ~IAppMapBuilder() = default;
 
     /**
-     * @brief Record a screen visit during execution
-     * @param url Current URL
-     * @param title Page title
-     * @param screenshotPath Optional screenshot of the screen
+     * \brief Record a screen visit during execution
+     * \param url Current URL
+     * \param title Page title
+     * \param screenshotPath Optional screenshot of the screen
      */
-    virtual void recordScreen(
+    virtual void RecordScreen(
         const std::string& url,
         const std::string& title,
         const std::optional<std::string>& screenshotPath = std::nullopt
     ) = 0;
 
     /**
-     * @brief Record a transition between screens
-     * @param fromUrl Source screen URL
-     * @param toUrl Target screen URL
-     * @param action Description of the action that caused the transition
+     * \brief Record a transition between screens
+     * \param fromUrl Source screen URL
+     * \param toUrl Target screen URL
+     * \param action Description of the action that caused the transition
      */
-    virtual void recordTransition(
+    virtual void RecordTransition(
         const std::string& fromUrl,
         const std::string& toUrl,
         const std::string& action
     ) = 0;
 
     /**
-     * @brief Get all discovered screens
+     * \brief Get all discovered screens
      */
-    virtual std::vector<AppScreen> getScreens() const = 0;
+    virtual std::vector<AppScreen> GetScreens() const = 0;
 
     /**
-     * @brief Get all discovered transitions
+     * \brief Get all discovered transitions
      */
-    virtual std::vector<AppTransition> getTransitions() const = 0;
+    virtual std::vector<AppTransition> GetTransitions() const = 0;
 
     /**
-     * @brief Get screens that have no test scenarios covering them
+     * \brief Get screens that have no test scenarios covering them
      */
-    virtual std::vector<AppScreen> getUntestedScreens() const = 0;
+    virtual std::vector<AppScreen> GetUntestedScreens() const = 0;
 
     /**
-     * @brief Calculate test coverage percentage
+     * \brief Calculate test coverage percentage
      */
-    virtual float getCoveragePercentage() const = 0;
+    virtual float GetCoveragePercentage() const = 0;
 
     /**
-     * @brief Export app map as JSON
+     * \brief Export app map as JSON
      */
-    virtual std::string toJson() const = 0;
+    virtual std::string ToJson() const = 0;
 };
 
 } // namespace imtsentra

@@ -1,13 +1,15 @@
+// SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #pragma once
 
 #include <string>
 #include <memory>
 #include <optional>
 
-namespace imtsentra {
+namespace imtsentra
+{
 
 /**
- * @brief Context provided to node actions for execution
+ * \brief Context provided to node actions for execution
  */
 struct ActionContext {
     std::string currentUrl;
@@ -19,7 +21,7 @@ struct ActionContext {
 };
 
 /**
- * @brief Result of a node action execution
+ * \brief Result of a node action execution
  */
 struct ActionResult {
     bool success;
@@ -30,7 +32,7 @@ struct ActionResult {
 };
 
 /**
- * @brief Interface for individual node actions
+ * \brief Interface for individual node actions
  *
  * Each node type has a corresponding INodeAction implementation
  * that knows how to execute the intent described in the node config.
@@ -40,25 +42,25 @@ public:
     virtual ~INodeAction() = default;
 
     /**
-     * @brief Execute the action with given context
-     * @param config JSON configuration from ScenarioNode::config
-     * @param context Current execution context
-     * @return Action result
+     * \brief Execute the action with given context
+     * \param config JSON configuration from ScenarioNode::config
+     * \param context Current execution context
+     * \return Action result
      */
-    virtual ActionResult execute(
+    virtual ActionResult Execute(
         const std::string& config,
         const ActionContext& context
     ) = 0;
 
     /**
-     * @brief Validate that the config is well-formed for this action type
+     * \brief Validate that the config is well-formed for this action type
      */
-    virtual bool validateConfig(const std::string& config) const = 0;
+    virtual bool ValidateConfig(const std::string& config) const = 0;
 
     /**
-     * @brief Human-readable description of what this action does
+     * \brief Human-readable description of what this action does
      */
-    virtual std::string describe(const std::string& config) const = 0;
+    virtual std::string Describe(const std::string& config) const = 0;
 };
 
 } // namespace imtsentra

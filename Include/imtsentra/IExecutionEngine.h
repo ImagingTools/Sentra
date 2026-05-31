@@ -1,19 +1,19 @@
+// SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #pragma once
 
 #include <string>
 #include <vector>
 #include <memory>
 #include <functional>
+#include <imtsentra/IScenarioExecutor.h>
 
-namespace imtsentra {
+namespace imtsentra
+{
 
 class IScenarioGraph;
-struct ExecutionConfig;
-struct NodeExecutionResult;
-enum class ExecutionStatus;
 
 /**
- * @brief Execution engine configuration
+ * \brief Execution engine configuration
  */
 struct EngineConfig {
     int maxParallelExecutions = 4;
@@ -24,7 +24,7 @@ struct EngineConfig {
 };
 
 /**
- * @brief Interface for the execution engine
+ * \brief Interface for the execution engine
  *
  * Orchestrates scenario execution including parallel execution,
  * retry logic, timeout management, and conditional branching.
@@ -34,46 +34,46 @@ public:
     virtual ~IExecutionEngine() = default;
 
     /**
-     * @brief Queue a scenario for execution
-     * @param graph Scenario graph to execute
-     * @param config Execution configuration
-     * @return Execution ID
+     * \brief Queue a scenario for execution
+     * \param graph Scenario graph to execute
+     * \param config Execution configuration
+     * \return Execution ID
      */
-    virtual std::string queueExecution(
+    virtual std::string QueueExecution(
         std::shared_ptr<IScenarioGraph> graph,
         const ExecutionConfig& config
     ) = 0;
 
     /**
-     * @brief Execute multiple scenarios in parallel
-     * @param graphs List of scenario graphs
-     * @param config Shared execution configuration
-     * @return List of execution IDs
+     * \brief Execute multiple scenarios in parallel
+     * \param graphs List of scenario graphs
+     * \param config Shared execution configuration
+     * \return List of execution IDs
      */
-    virtual std::vector<std::string> queueParallelExecution(
+    virtual std::vector<std::string> QueueParallelExecution(
         const std::vector<std::shared_ptr<IScenarioGraph>>& graphs,
         const ExecutionConfig& config
     ) = 0;
 
     /**
-     * @brief Cancel a queued or running execution
+     * \brief Cancel a queued or running execution
      */
-    virtual void cancelExecution(const std::string& executionId) = 0;
+    virtual void CancelExecution(const std::string& executionId) = 0;
 
     /**
-     * @brief Get the number of currently running executions
+     * \brief Get the number of currently running executions
      */
-    virtual int getActiveExecutionCount() const = 0;
+    virtual int GetActiveExecutionCount() const = 0;
 
     /**
-     * @brief Get engine configuration
+     * \brief Get engine configuration
      */
-    virtual EngineConfig getConfig() const = 0;
+    virtual EngineConfig GetConfig() const = 0;
 
     /**
-     * @brief Update engine configuration
+     * \brief Update engine configuration
      */
-    virtual void setConfig(const EngineConfig& config) = 0;
+    virtual void SetConfig(const EngineConfig& config) = 0;
 };
 
 } // namespace imtsentra

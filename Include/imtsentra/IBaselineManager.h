@@ -1,32 +1,36 @@
+// SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #pragma once
 
 #include <string>
 #include <vector>
 #include <optional>
 
-namespace imtsentra {
+namespace imtsentra
+{
 
 /**
- * @brief Baseline update strategy
+ * \brief Baseline update strategy
  */
-enum class BaselineStrategy {
-    Manual,
-    AutoAcceptOnBranch,
-    Threshold,
-    AiAssisted
+enum BaselineStrategy
+{
+    BS_MANUAL,
+    BS_AUTO_ACCEPT_ON_BRANCH,
+    BS_THRESHOLD,
+    BS_AI_ASSISTED
 };
 
 /**
- * @brief Baseline decision for a specific diff
+ * \brief Baseline decision for a specific diff
  */
-enum class BaselineDecision {
-    Accept,
-    Reject,
-    IgnoreRegion
+enum BaselineDecision
+{
+    BD_ACCEPT,
+    BD_REJECT,
+    BD_IGNORE_REGION
 };
 
 /**
- * @brief Baseline entry metadata
+ * \brief Baseline entry metadata
  */
 struct BaselineEntry {
     std::string id;
@@ -41,7 +45,7 @@ struct BaselineEntry {
 };
 
 /**
- * @brief Interface for baseline management
+ * \brief Interface for baseline management
  *
  * Manages baseline images and their lifecycle including versioning,
  * approval workflows, and update strategies.
@@ -51,57 +55,57 @@ public:
     virtual ~IBaselineManager() = default;
 
     /**
-     * @brief Get baseline for a specific scenario node
+     * \brief Get baseline for a specific scenario node
      */
-    virtual std::optional<BaselineEntry> getBaseline(
+    virtual std::optional<BaselineEntry> GetBaseline(
         const std::string& scenarioId,
         const std::string& nodeId
     ) const = 0;
 
     /**
-     * @brief Create or update baseline from execution result
-     * @param scenarioId Scenario identifier
-     * @param nodeId Node identifier
-     * @param screenshotPath Path to the new baseline screenshot
-     * @return Created/updated baseline entry
+     * \brief Create or update baseline from execution result
+     * \param scenarioId Scenario identifier
+     * \param nodeId Node identifier
+     * \param screenshotPath Path to the new baseline screenshot
+     * \return Created/updated baseline entry
      */
-    virtual BaselineEntry setBaseline(
+    virtual BaselineEntry SetBaseline(
         const std::string& scenarioId,
         const std::string& nodeId,
         const std::string& screenshotPath
     ) = 0;
 
     /**
-     * @brief Apply decision to a baseline diff
+     * \brief Apply decision to a baseline diff
      */
-    virtual void applyDecision(
+    virtual void ApplyDecision(
         const std::string& baselineId,
         BaselineDecision decision,
         const std::string& decidedBy
     ) = 0;
 
     /**
-     * @brief Get all baselines for a scenario
+     * \brief Get all baselines for a scenario
      */
-    virtual std::vector<BaselineEntry> getBaselines(const std::string& scenarioId) const = 0;
+    virtual std::vector<BaselineEntry> GetBaselines(const std::string& scenarioId) const = 0;
 
     /**
-     * @brief Get baseline history (all versions)
+     * \brief Get baseline history (all versions)
      */
-    virtual std::vector<BaselineEntry> getHistory(
+    virtual std::vector<BaselineEntry> GetHistory(
         const std::string& scenarioId,
         const std::string& nodeId
     ) const = 0;
 
     /**
-     * @brief Get current update strategy
+     * \brief Get current update strategy
      */
-    virtual BaselineStrategy getStrategy() const = 0;
+    virtual BaselineStrategy GetStrategy() const = 0;
 
     /**
-     * @brief Set update strategy
+     * \brief Set update strategy
      */
-    virtual void setStrategy(BaselineStrategy strategy) = 0;
+    virtual void SetStrategy(BaselineStrategy strategy) = 0;
 };
 
 } // namespace imtsentra

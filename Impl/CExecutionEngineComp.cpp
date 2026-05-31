@@ -1,22 +1,24 @@
-#include "imtsentra/CExecutionEngineComp.h"
-#include "imtsentra/IScenarioExecutor.h"
+// SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
+#include <imtsentra/CExecutionEngineComp.h>
+#include <imtsentra/IScenarioExecutor.h>
 #include <chrono>
 
-namespace imtsentra {
+namespace imtsentra
+{
 
 CExecutionEngineComp::CExecutionEngineComp() = default;
 
 CExecutionEngineComp::~CExecutionEngineComp() {
-    stop();
+    Stop();
 }
 
-std::string CExecutionEngineComp::queueExecution(
+std::string CExecutionEngineComp::QueueExecution(
     std::shared_ptr<IScenarioGraph> graph,
     const ExecutionConfig& config
 ) {
     std::lock_guard<std::mutex> lock(m_mutex);
     QueuedExecution qe;
-    qe.id = generateId();
+    qe.id = GenerateId();
     qe.graph = graph;
     qe.config = config;
     std::string id = qe.id;
@@ -25,44 +27,44 @@ std::string CExecutionEngineComp::queueExecution(
     return id;
 }
 
-std::vector<std::string> CExecutionEngineComp::queueParallelExecution(
+std::vector<std::string> CExecutionEngineComp::QueueParallelExecution(
     const std::vector<std::shared_ptr<IScenarioGraph>>& graphs,
     const ExecutionConfig& config
 ) {
     std::vector<std::string> ids;
     ids.reserve(graphs.size());
     for (const auto& graph : graphs) {
-        ids.push_back(queueExecution(graph, config));
+        ids.push_back(QueueExecution(graph, config));
     }
     return ids;
 }
 
-void CExecutionEngineComp::cancelExecution(const std::string& executionId) {
+void CExecutionEngineComp::CancelExecution(const std::string& executionId) {
     // TODO: Signal cancellation to running execution
 }
 
-int CExecutionEngineComp::getActiveExecutionCount() const {
+int CExecutionEngineComp::GetActiveExecutionCount() const {
     return m_activeCount.load();
 }
 
-EngineConfig CExecutionEngineComp::getConfig() const {
+EngineConfig CExecutionEngineComp::GetConfig() const {
     std::lock_guard<std::mutex> lock(m_mutex);
     return m_config;
 }
 
-void CExecutionEngineComp::setConfig(const EngineConfig& config) {
+void CExecutionEngineComp::SetConfig(const EngineConfig& config) {
     std::lock_guard<std::mutex> lock(m_mutex);
     m_config = config;
 }
 
-void CExecutionEngineComp::start() {
+void CExecutionEngineComp::Start() {
     m_running = true;
     for (int i = 0; i < m_config.maxParallelExecutions; ++i) {
-        m_workers.emplace_back(&CExecutionEngineComp::workerLoop, this);
+        m_workers.emplace_back(&CExecutionEngineComp::WorkerLoop, this);
     }
 }
 
-void CExecutionEngineComp::stop() {
+void CExecutionEngineComp::Stop() {
     m_running = false;
     m_cv.notify_all();
     for (auto& worker : m_workers) {
@@ -73,7 +75,7 @@ void CExecutionEngineComp::stop() {
     m_workers.clear();
 }
 
-void CExecutionEngineComp::workerLoop() {
+void CExecutionEngineComp::WorkerLoop() {
     while (m_running) {
         QueuedExecution qe;
         {
@@ -93,7 +95,7 @@ void CExecutionEngineComp::workerLoop() {
     }
 }
 
-std::string CExecutionEngineComp::generateId() const {
+std::string CExecutionEngineComp::GenerateId() const {
     auto now = std::chrono::system_clock::now();
     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
     return "exec-" + std::to_string(ms);

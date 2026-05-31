@@ -1,12 +1,14 @@
+// SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #pragma once
 
-#include "IScenarioGraph.h"
+#include <imtsentra/IScenarioGraph.h>
 #include <unordered_map>
 
-namespace imtsentra {
+namespace imtsentra
+{
 
 /**
- * @brief ACF Component implementing IScenarioGraph
+ * \brief ACF Component implementing IScenarioGraph
  *
  * Provides a directed graph implementation with support for
  * topological ordering, cycle detection, and JSON serialization.
@@ -17,34 +19,34 @@ public:
     ~CScenarioGraphComp() override;
 
     // IScenarioGraph implementation
-    std::string getId() const override;
-    std::string getName() const override;
-    void setName(const std::string& name) override;
-    std::optional<std::string> getDescription() const override;
-    void setDescription(const std::string& description) override;
+    std::string GetId() const override;
+    std::string GetName() const override;
+    void SetName(const std::string& name) override;
+    std::optional<std::string> GetDescription() const override;
+    void SetDescription(const std::string& description) override;
 
-    void addNode(const ScenarioNode& node) override;
-    void removeNode(const std::string& nodeId) override;
-    void updateNode(const ScenarioNode& node) override;
-    std::optional<ScenarioNode> getNode(const std::string& nodeId) const override;
-    std::vector<ScenarioNode> getNodes() const override;
+    void AddNode(const ScenarioNode& node) override;
+    void RemoveNode(const std::string& nodeId) override;
+    void UpdateNode(const ScenarioNode& node) override;
+    std::optional<ScenarioNode> GetNode(const std::string& nodeId) const override;
+    std::vector<ScenarioNode> GetNodes() const override;
 
-    void addEdge(const ScenarioEdge& edge) override;
-    void removeEdge(const std::string& edgeId) override;
-    void updateEdge(const ScenarioEdge& edge) override;
-    std::optional<ScenarioEdge> getEdge(const std::string& edgeId) const override;
-    std::vector<ScenarioEdge> getEdges() const override;
+    void AddEdge(const ScenarioEdge& edge) override;
+    void RemoveEdge(const std::string& edgeId) override;
+    void UpdateEdge(const ScenarioEdge& edge) override;
+    std::optional<ScenarioEdge> GetEdge(const std::string& edgeId) const override;
+    std::vector<ScenarioEdge> GetEdges() const override;
 
-    std::vector<ScenarioNode> getSuccessors(const std::string& nodeId) const override;
-    std::vector<ScenarioNode> getPredecessors(const std::string& nodeId) const override;
-    std::vector<ScenarioNode> getRootNodes() const override;
-    std::vector<ScenarioNode> getTopologicalOrder() const override;
+    std::vector<ScenarioNode> GetSuccessors(const std::string& nodeId) const override;
+    std::vector<ScenarioNode> GetPredecessors(const std::string& nodeId) const override;
+    std::vector<ScenarioNode> GetRootNodes() const override;
+    std::vector<ScenarioNode> GetTopologicalOrder() const override;
 
-    bool isValid() const override;
-    bool hasCycles() const override;
+    bool IsValid() const override;
+    bool HasCycles() const override;
 
-    std::string toJson() const override;
-    bool fromJson(const std::string& json) override;
+    std::string ToJson() const override;
+    bool FromJson(const std::string& json) override;
 
 private:
     std::string m_id;
@@ -53,7 +55,7 @@ private:
     std::unordered_map<std::string, ScenarioNode> m_nodes;
     std::unordered_map<std::string, ScenarioEdge> m_edges;
 
-    bool detectCyclesDFS(
+    bool DetectCyclesDFS(
         const std::string& nodeId,
         std::unordered_map<std::string, int>& visited
     ) const;

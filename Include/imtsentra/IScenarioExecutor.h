@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #pragma once
 
 #include <string>
@@ -6,22 +7,24 @@
 #include <memory>
 #include <optional>
 
-namespace imtsentra {
+namespace imtsentra
+{
 
 /**
- * @brief Execution status for individual nodes and overall execution
+ * \brief Execution status for individual nodes and overall execution
  */
-enum class ExecutionStatus {
-    Pending,
-    Running,
-    Passed,
-    Failed,
-    Skipped,
-    TimedOut
+enum ExecutionStatus
+{
+    ES_PENDING,
+    ES_RUNNING,
+    ES_PASSED,
+    ES_FAILED,
+    ES_SKIPPED,
+    ES_TIMED_OUT
 };
 
 /**
- * @brief Result of executing a single scenario node
+ * \brief Result of executing a single scenario node
  */
 struct NodeExecutionResult {
     std::string nodeId;
@@ -35,7 +38,7 @@ struct NodeExecutionResult {
 };
 
 /**
- * @brief Execution configuration
+ * \brief Execution configuration
  */
 struct ExecutionConfig {
     std::string environment;
@@ -48,7 +51,7 @@ struct ExecutionConfig {
 };
 
 /**
- * @brief Progress callback for execution monitoring
+ * \brief Progress callback for execution monitoring
  */
 using ExecutionProgressCallback = std::function<void(
     const std::string& executionId,
@@ -60,7 +63,7 @@ using ExecutionProgressCallback = std::function<void(
 class IScenarioGraph;
 
 /**
- * @brief Interface for scenario execution
+ * \brief Interface for scenario execution
  *
  * Executes a scenario graph by traversing nodes in topological order,
  * resolving intents via AI, performing browser actions, and collecting results.
@@ -70,47 +73,47 @@ public:
     virtual ~IScenarioExecutor() = default;
 
     /**
-     * @brief Start executing a scenario
-     * @param graph The scenario graph to execute
-     * @param config Execution configuration
-     * @return Execution ID for tracking
+     * \brief Start executing a scenario
+     * \param graph The scenario graph to execute
+     * \param config Execution configuration
+     * \return Execution ID for tracking
      */
-    virtual std::string execute(
+    virtual std::string Execute(
         std::shared_ptr<IScenarioGraph> graph,
         const ExecutionConfig& config
     ) = 0;
 
     /**
-     * @brief Stop a running execution
-     * @param executionId ID of the execution to stop
+     * \brief Stop a running execution
+     * \param executionId ID of the execution to stop
      */
-    virtual void stop(const std::string& executionId) = 0;
+    virtual void Stop(const std::string& executionId) = 0;
 
     /**
-     * @brief Retry execution from a specific node
-     * @param executionId Original execution ID
-     * @param fromNodeId Node to restart from
-     * @return New execution ID
+     * \brief Retry execution from a specific node
+     * \param executionId Original execution ID
+     * \param fromNodeId Node to restart from
+     * \return New execution ID
      */
-    virtual std::string retry(
+    virtual std::string Retry(
         const std::string& executionId,
         const std::string& fromNodeId
     ) = 0;
 
     /**
-     * @brief Get current execution status
+     * \brief Get current execution status
      */
-    virtual ExecutionStatus getStatus(const std::string& executionId) const = 0;
+    virtual ExecutionStatus GetStatus(const std::string& executionId) const = 0;
 
     /**
-     * @brief Get results for all completed nodes
+     * \brief Get results for all completed nodes
      */
-    virtual std::vector<NodeExecutionResult> getResults(const std::string& executionId) const = 0;
+    virtual std::vector<NodeExecutionResult> GetResults(const std::string& executionId) const = 0;
 
     /**
-     * @brief Register progress callback
+     * \brief Register progress callback
      */
-    virtual void onProgress(ExecutionProgressCallback callback) = 0;
+    virtual void OnProgress(ExecutionProgressCallback callback) = 0;
 };
 
 } // namespace imtsentra

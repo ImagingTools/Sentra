@@ -1,11 +1,13 @@
-#include "imtsentra/CPixelDiffComparatorComp.h"
+// SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
+#include <imtsentra/CPixelDiffComparatorComp.h>
 
-namespace imtsentra {
+namespace imtsentra
+{
 
 CPixelDiffComparatorComp::CPixelDiffComparatorComp() = default;
 CPixelDiffComparatorComp::~CPixelDiffComparatorComp() = default;
 
-ComparisonResult CPixelDiffComparatorComp::compare(
+ComparisonResult CPixelDiffComparatorComp::Compare(
     const std::string& baselinePath,
     const std::string& actualPath,
     const ComparisonConfig& config
@@ -30,7 +32,7 @@ ComparisonResult CPixelDiffComparatorComp::compare(
     return result;
 }
 
-bool CPixelDiffComparatorComp::generateDiffImage(
+bool CPixelDiffComparatorComp::GenerateDiffImage(
     const std::string& baselinePath,
     const std::string& actualPath,
     const std::string& outputPath,
@@ -43,8 +45,8 @@ bool CPixelDiffComparatorComp::generateDiffImage(
     return false;
 }
 
-ComparisonAlgorithm CPixelDiffComparatorComp::getAlgorithm() const {
-    return ComparisonAlgorithm::PixelDiff;
+ComparisonAlgorithm CPixelDiffComparatorComp::GetAlgorithm() const {
+    return CA_PIXEL_DIFF;
 }
 
 } // namespace imtsentra

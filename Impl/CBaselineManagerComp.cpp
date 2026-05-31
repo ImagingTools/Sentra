@@ -1,18 +1,20 @@
-#include "imtsentra/CBaselineManagerComp.h"
+// SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
+#include <imtsentra/CBaselineManagerComp.h>
 #include <chrono>
 #include <sstream>
 
-namespace imtsentra {
+namespace imtsentra
+{
 
 CBaselineManagerComp::CBaselineManagerComp() = default;
 CBaselineManagerComp::~CBaselineManagerComp() = default;
 
-std::optional<BaselineEntry> CBaselineManagerComp::getBaseline(
+std::optional<BaselineEntry> CBaselineManagerComp::GetBaseline(
     const std::string& scenarioId,
     const std::string& nodeId
 ) const {
     std::lock_guard<std::mutex> lock(m_mutex);
-    auto key = makeKey(scenarioId, nodeId);
+    auto key = MakeKey(scenarioId, nodeId);
     auto it = m_baselines.find(key);
     if (it != m_baselines.end() && !it->second.empty()) {
         return it->second.back();  // Latest version
@@ -20,13 +22,13 @@ std::optional<BaselineEntry> CBaselineManagerComp::getBaseline(
     return std::nullopt;
 }
 
-BaselineEntry CBaselineManagerComp::setBaseline(
+BaselineEntry CBaselineManagerComp::SetBaseline(
     const std::string& scenarioId,
     const std::string& nodeId,
     const std::string& screenshotPath
 ) {
     std::lock_guard<std::mutex> lock(m_mutex);
-    auto key = makeKey(scenarioId, nodeId);
+    auto key = MakeKey(scenarioId, nodeId);
 
     auto now = std::chrono::system_clock::now();
     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
@@ -47,7 +49,7 @@ BaselineEntry CBaselineManagerComp::setBaseline(
     return entry;
 }
 
-void CBaselineManagerComp::applyDecision(
+void CBaselineManagerComp::ApplyDecision(
     const std::string& baselineId,
     BaselineDecision decision,
     const std::string& decidedBy
@@ -56,7 +58,7 @@ void CBaselineManagerComp::applyDecision(
     // TODO: Record the decision and update baseline if accepted
 }
 
-std::vector<BaselineEntry> CBaselineManagerComp::getBaselines(const std::string& scenarioId) const {
+std::vector<BaselineEntry> CBaselineManagerComp::GetBaselines(const std::string& scenarioId) const {
     std::lock_guard<std::mutex> lock(m_mutex);
     std::vector<BaselineEntry> result;
     for (const auto& [key, versions] : m_baselines) {
@@ -67,12 +69,12 @@ std::vector<BaselineEntry> CBaselineManagerComp::getBaselines(const std::string&
     return result;
 }
 
-std::vector<BaselineEntry> CBaselineManagerComp::getHistory(
+std::vector<BaselineEntry> CBaselineManagerComp::GetHistory(
     const std::string& scenarioId,
     const std::string& nodeId
 ) const {
     std::lock_guard<std::mutex> lock(m_mutex);
-    auto key = makeKey(scenarioId, nodeId);
+    auto key = MakeKey(scenarioId, nodeId);
     auto it = m_baselines.find(key);
     if (it != m_baselines.end()) {
         return it->second;
@@ -80,15 +82,15 @@ std::vector<BaselineEntry> CBaselineManagerComp::getHistory(
     return {};
 }
 
-BaselineStrategy CBaselineManagerComp::getStrategy() const {
+BaselineStrategy CBaselineManagerComp::GetStrategy() const {
     return m_strategy;
 }
 
-void CBaselineManagerComp::setStrategy(BaselineStrategy strategy) {
+void CBaselineManagerComp::SetStrategy(BaselineStrategy strategy) {
     m_strategy = strategy;
 }
 
-std::string CBaselineManagerComp::makeKey(const std::string& scenarioId, const std::string& nodeId) const {
+std::string CBaselineManagerComp::MakeKey(const std::string& scenarioId, const std::string& nodeId) const {
     return scenarioId + "/" + nodeId;
 }
 

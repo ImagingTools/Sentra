@@ -1,20 +1,22 @@
-#include "imtsentra/CAppMapBuilderComp.h"
+// SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
+#include <imtsentra/CAppMapBuilderComp.h>
 #include <chrono>
 #include <sstream>
 #include <algorithm>
 
-namespace imtsentra {
+namespace imtsentra
+{
 
 CAppMapBuilderComp::CAppMapBuilderComp() = default;
 CAppMapBuilderComp::~CAppMapBuilderComp() = default;
 
-void CAppMapBuilderComp::recordScreen(
+void CAppMapBuilderComp::RecordScreen(
     const std::string& url,
     const std::string& title,
     const std::optional<std::string>& screenshotPath
 ) {
     std::lock_guard<std::mutex> lock(m_mutex);
-    auto normalizedUrl = normalizeUrl(url);
+    auto normalizedUrl = NormalizeUrl(url);
     auto now = std::to_string(
         std::chrono::duration_cast<std::chrono::milliseconds>(
             std::chrono::system_clock::now().time_since_epoch()
@@ -30,7 +32,7 @@ void CAppMapBuilderComp::recordScreen(
         }
     } else {
         AppScreen screen;
-        screen.id = generateId();
+        screen.id = GenerateId();
         screen.url = normalizedUrl;
         screen.title = title;
         screen.screenshotPath = screenshotPath;
@@ -41,14 +43,14 @@ void CAppMapBuilderComp::recordScreen(
     }
 }
 
-void CAppMapBuilderComp::recordTransition(
+void CAppMapBuilderComp::RecordTransition(
     const std::string& fromUrl,
     const std::string& toUrl,
     const std::string& action
 ) {
     std::lock_guard<std::mutex> lock(m_mutex);
-    auto normFrom = normalizeUrl(fromUrl);
-    auto normTo = normalizeUrl(toUrl);
+    auto normFrom = NormalizeUrl(fromUrl);
+    auto normTo = NormalizeUrl(toUrl);
 
     // Check if transition already exists
     for (const auto& t : m_transitions) {
@@ -64,7 +66,7 @@ void CAppMapBuilderComp::recordTransition(
     );
 
     AppTransition transition;
-    transition.id = generateId();
+    transition.id = GenerateId();
     transition.sourceScreenId = normFrom;
     transition.targetScreenId = normTo;
     transition.action = action;
@@ -72,7 +74,7 @@ void CAppMapBuilderComp::recordTransition(
     m_transitions.push_back(std::move(transition));
 }
 
-std::vector<AppScreen> CAppMapBuilderComp::getScreens() const {
+std::vector<AppScreen> CAppMapBuilderComp::GetScreens() const {
     std::lock_guard<std::mutex> lock(m_mutex);
     std::vector<AppScreen> screens;
     screens.reserve(m_screens.size());
@@ -82,12 +84,12 @@ std::vector<AppScreen> CAppMapBuilderComp::getScreens() const {
     return screens;
 }
 
-std::vector<AppTransition> CAppMapBuilderComp::getTransitions() const {
+std::vector<AppTransition> CAppMapBuilderComp::GetTransitions() const {
     std::lock_guard<std::mutex> lock(m_mutex);
     return m_transitions;
 }
 
-std::vector<AppScreen> CAppMapBuilderComp::getUntestedScreens() const {
+std::vector<AppScreen> CAppMapBuilderComp::GetUntestedScreens() const {
     std::lock_guard<std::mutex> lock(m_mutex);
     std::vector<AppScreen> untested;
     for (const auto& [url, screen] : m_screens) {
@@ -98,7 +100,7 @@ std::vector<AppScreen> CAppMapBuilderComp::getUntestedScreens() const {
     return untested;
 }
 
-float CAppMapBuilderComp::getCoveragePercentage() const {
+float CAppMapBuilderComp::GetCoveragePercentage() const {
     std::lock_guard<std::mutex> lock(m_mutex);
     if (m_screens.empty()) return 0.0f;
 
@@ -109,7 +111,7 @@ float CAppMapBuilderComp::getCoveragePercentage() const {
     return static_cast<float>(tested) / static_cast<float>(m_screens.size()) * 100.0f;
 }
 
-std::string CAppMapBuilderComp::toJson() const {
+std::string CAppMapBuilderComp::ToJson() const {
     std::lock_guard<std::mutex> lock(m_mutex);
     std::ostringstream ss;
     ss << "{\"screens\":[";
@@ -136,13 +138,13 @@ std::string CAppMapBuilderComp::toJson() const {
     return ss.str();
 }
 
-std::string CAppMapBuilderComp::generateId() const {
+std::string CAppMapBuilderComp::GenerateId() const {
     auto now = std::chrono::system_clock::now();
     auto ms = std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch()).count();
     return "map-" + std::to_string(ms);
 }
 
-std::string CAppMapBuilderComp::normalizeUrl(const std::string& url) const {
+std::string CAppMapBuilderComp::NormalizeUrl(const std::string& url) const {
     // Remove trailing slash and query params for grouping
     auto result = url;
     if (!result.empty() && result.back() == '/') {
