@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #include <imtsentra/CScreenshotStorageComp.h>
-#include <fstream>
+
+#include <iimg/IBitmap.h>
+
 #include <filesystem>
 
 namespace fs = std::filesystem;
@@ -18,43 +20,45 @@ CScreenshotStorageComp::~CScreenshotStorageComp() = default;
 std::string CScreenshotStorageComp::StoreExecutionScreenshot(
     const std::string& executionId,
     const std::string& nodeId,
-    const std::vector<uint8_t>& imageData
+    const iimg::IBitmap& bitmap
 ) {
     auto dir = EnsureDirectory(m_basePath + "/executions/" + executionId + "/" + nodeId);
     auto path = dir + "/actual.png";
-
-    std::ofstream file(path, std::ios::binary);
-    file.write(reinterpret_cast<const char*>(imageData.data()), imageData.size());
-
+    SaveBitmap(bitmap, path);
     return path;
 }
 
 std::string CScreenshotStorageComp::StoreBaselineScreenshot(
     const std::string& scenarioId,
     const std::string& nodeId,
-    const std::vector<uint8_t>& imageData
+    const iimg::IBitmap& bitmap
 ) {
     auto dir = EnsureDirectory(m_basePath + "/baselines/" + scenarioId + "/" + nodeId);
     auto path = dir + "/baseline.png";
-
-    std::ofstream file(path, std::ios::binary);
-    file.write(reinterpret_cast<const char*>(imageData.data()), imageData.size());
-
+    SaveBitmap(bitmap, path);
     return path;
 }
 
 std::string CScreenshotStorageComp::StoreDiffImage(
     const std::string& executionId,
     const std::string& nodeId,
-    const std::vector<uint8_t>& imageData
+    const iimg::IBitmap& bitmap
 ) {
     auto dir = EnsureDirectory(m_basePath + "/diffs/" + executionId + "/" + nodeId);
     auto path = dir + "/diff.png";
-
-    std::ofstream file(path, std::ios::binary);
-    file.write(reinterpret_cast<const char*>(imageData.data()), imageData.size());
-
+    SaveBitmap(bitmap, path);
     return path;
+}
+
+std::shared_ptr<iimg::IBitmap> CScreenshotStorageComp::LoadScreenshot(
+    const std::string& path
+) const {
+    if (!fs::exists(path)) {
+        return nullptr;
+    }
+
+    // TODO: Use iimg codec to load bitmap from file
+    return nullptr;
 }
 
 std::optional<std::string> CScreenshotStorageComp::GetExecutionScreenshotPath(
@@ -96,6 +100,16 @@ size_t CScreenshotStorageComp::GetTotalStorageSize() const {
 std::string CScreenshotStorageComp::EnsureDirectory(const std::string& path) const {
     fs::create_directories(path);
     return path;
+}
+
+bool CScreenshotStorageComp::SaveBitmap(
+    const iimg::IBitmap& bitmap,
+    const std::string& path
+) const {
+    // TODO: Use iimg codec to save bitmap to file
+    (void)bitmap;
+    (void)path;
+    return false;
 }
 
 } // namespace imtsentra

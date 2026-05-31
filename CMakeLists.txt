@@ -18,6 +18,10 @@ if(DEFINED ENV{IMTCOREDIR})
     list(APPEND CMAKE_PREFIX_PATH ${IMTCORE_DIR})
 endif()
 
+# Acf image definition (iimg) and image processing framework (iipr)
+find_package(iimg REQUIRED)
+find_package(iipr REQUIRED)
+
 # Core library
 add_library(imtsentra
     Impl/CScenarioGraphComp.cpp
@@ -40,6 +44,8 @@ target_link_libraries(imtsentra PUBLIC
     Qt6::Core
     Qt6::Network
     Qt6::WebSockets
+    iimg::iimg
+    iipr::iipr
 )
 
 # GraphQL API library

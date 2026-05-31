@@ -378,7 +378,8 @@ Team Workflow
 Разработать платформу визуального AI-тестирования веб-приложений как **отдельный проект на базе ImtCore/ACF**, в которой пользователь описывает сценарии тестирования в виде последовательности визуальных шагов, соединённых между собой графом, без необходимости писать код, локаторы, XPath, CSS-селекторы или Playwright-скрипты.
 
 **Тип проекта:** Отдельный репозиторий, зависящий от ImtCore/ACF  
-**Зависимости от ImtCore:** imtbase, imtcore, imtcom, imtgql, imtservergql, imtclientgql, imtcontrols, imtgui, imthttp, imtimg, imtdb/imtmdbx, imtsdl + кодогенераторы
+**Зависимости от ImtCore:** imtbase, imtcore, imtcom, imtgql, imtservergql, imtclientgql, imtcontrols, imtgui, imthttp, imtdb/imtmdbx, imtsdl + кодогенераторы  
+**Зависимости от Acf/AcfSln:** iimg (определение и работа с изображениями), iipr (фреймворк обработки изображений)
 
 ---
 
@@ -852,7 +853,8 @@ AI:
 - `imtgql` / `imtservergql` / `imtclientgql` — GraphQL
 - `imtcontrols` / `imtgui` — UI компоненты
 - `imthttp` — WebSocket/HTTP коммуникация
-- `imtimg` — работа с изображениями
+- `iimg` (Acf) — определение и работа с изображениями (IBitmap, PixelFormat)
+- `iipr` (AcfSln) — фреймворк обработки изображений (CBitmapOperations, CImageProcessorCompBase)
 - `imtmdbx` — embedded database
 - `imtsdl` + `imtsdlgencpp` + `imtsdlgenqml` — SDL кодогенерация
 - `imtfile` — файловая система

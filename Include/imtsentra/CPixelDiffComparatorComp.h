@@ -10,7 +10,8 @@ namespace imtsentra
  * \brief Pixel-by-pixel image comparison component
  *
  * Compares images pixel by pixel with configurable threshold
- * and anti-aliasing tolerance.
+ * and anti-aliasing tolerance. Uses iimg::IBitmap for image
+ * representation and iipr bitmap operations for diff calculation.
  */
 class CPixelDiffComparatorComp : public IImageComparator {
 public:
@@ -18,19 +19,25 @@ public:
     ~CPixelDiffComparatorComp() override;
 
     ComparisonResult Compare(
-        const std::string& baselinePath,
-        const std::string& actualPath,
+        const iimg::IBitmap& baseline,
+        const iimg::IBitmap& actual,
         const ComparisonConfig& config
     ) override;
 
     bool GenerateDiffImage(
-        const std::string& baselinePath,
-        const std::string& actualPath,
-        const std::string& outputPath,
+        const iimg::IBitmap& baseline,
+        const iimg::IBitmap& actual,
+        iimg::IBitmap& diffOutput,
         const ComparisonConfig& config
     ) override;
 
     ComparisonAlgorithm GetAlgorithm() const override;
+
+private:
+    /**
+     * \brief Check whether a pixel coordinate falls within any ignore region
+     */
+    bool IsInIgnoreRegion(int x, int y, const std::vector<IgnoreRegion>& regions) const;
 };
 
 } // namespace imtsentra

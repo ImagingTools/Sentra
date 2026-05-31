@@ -39,6 +39,9 @@ class ImtSentraConan(ConanFile):
     def requirements(self):
         # ImtCore dependencies
         self.requires("imtcore/[>=1.0]")
+        # Acf image definition (iimg) and image processing (iipr)
+        self.requires("acf/[>=1.0]")
+        self.requires("acfsln/[>=1.0]")
         self.requires("qt/[>=6.5]")
 
     def build_requirements(self):
