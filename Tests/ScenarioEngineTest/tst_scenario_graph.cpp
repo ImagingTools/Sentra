@@ -2,9 +2,9 @@
 #include <cassert>
 #include <iostream>
 #include <QtCore/QString>
-#include <imtsentra/CScenarioGraphComp.h>
+#include <sentra/CScenarioGraphComp.h>
 
-using namespace imtsentra;
+using namespace sentra;
 
 void testAddNode() {
     CScenarioGraphComp graph;

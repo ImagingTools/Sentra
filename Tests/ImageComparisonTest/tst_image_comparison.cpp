@@ -2,10 +2,10 @@
 #include <cassert>
 #include <iostream>
 #include <QtCore/QString>
-#include <imtsentra/CPixelDiffComparatorComp.h>
+#include <sentra/CPixelDiffComparatorComp.h>
 #include <iimg/IBitmap.h>
 
-using namespace imtsentra;
+using namespace sentra;
 
 void testComparisonAlgorithm() {
     CPixelDiffComparatorComp comparator;

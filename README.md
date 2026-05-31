@@ -14,12 +14,12 @@
 ## Структура проекта
 
 ```
-ImtSentra/
+Sentra/
 ├── Include/
-│   ├── imtsentra/          # Core interfaces (I*.h) + components (C*Comp.h/.cpp)
-│   └── imtsentragql/       # GraphQL API controllers (C*Comp.h/.cpp)
-├── Sdl/imtsentra/1.0/      # SDL schemas (Scenario, Execution, Baseline, etc.)
-├── Qml/imtsentragui/       # QML UI components
+│   ├── sentra/          # Core interfaces (I*.h) + components (C*Comp.h/.cpp)
+│   └── sentragql/       # GraphQL API controllers (C*Comp.h/.cpp)
+├── Sdl/sentra/1.0/      # SDL schemas (Scenario, Execution, Baseline, etc.)
+├── Qml/sentragui/       # QML UI components
 │   ├── GraphEditor/        # Visual graph scenario editor
 │   ├── Timeline/           # Execution timeline
 │   ├── DiffViewer/         # Screenshot diff viewer
@@ -31,8 +31,8 @@ ImtSentra/
 │   ├── Exploration/        # Autonomous exploration agent
 │   └── CLI/                # Command-line interface
 ├── Impl/                   # ACF component packages
-│   ├── ImtSentraPck/       # Core package (I_EXPORT_PACKAGE/I_EXPORT_COMPONENT)
-│   └── ImtSentraGqlPck/    # GraphQL package
+│   ├── SentraPck/       # Core package (I_EXPORT_PACKAGE/I_EXPORT_COMPONENT)
+│   └── SentraGqlPck/    # GraphQL package
 ├── Partitura/              # ACF component wiring (SentraCoreVoce.arp/*.acc + *.accl)
 ├── Tests/                  # Unit & integration tests
 ├── Config/                 # Configuration files

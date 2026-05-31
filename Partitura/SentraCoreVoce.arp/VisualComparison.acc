@@ -10,17 +10,17 @@
     <Description>Sentra visual comparison assembly: pixel comparator, baseline manager and screenshot storage.</Description>
     <Keywords></Keywords>
     <ElementsList>
-        <Element Id="PixelDiffComparator" PackageId="ImtSentraPck" ComponentId="PixelDiffComparator">
+        <Element Id="PixelDiffComparator" PackageId="SentraPck" ComponentId="PixelDiffComparator">
             <Data IsEnabled="true" Flags="0">
                 <AttributeInfoMap/>
             </Data>
         </Element>
-        <Element Id="BaselineManager" PackageId="ImtSentraPck" ComponentId="BaselineManager">
+        <Element Id="BaselineManager" PackageId="SentraPck" ComponentId="BaselineManager">
             <Data IsEnabled="true" Flags="0">
                 <AttributeInfoMap/>
             </Data>
         </Element>
-        <Element Id="ScreenshotStorage" PackageId="ImtSentraPck" ComponentId="ScreenshotStorage">
+        <Element Id="ScreenshotStorage" PackageId="SentraPck" ComponentId="ScreenshotStorage">
             <Data IsEnabled="true" Flags="0">
                 <AttributeInfoMap>
                     <AttributeInfo Id="BasePath" Type="Text" ExportId="">
@@ -32,9 +32,9 @@
     </ElementsList>
     <EmbeddedRegistriesList/>
     <ExportedInterfaces>
-        <Interface InterfaceId="imtsentra::IImageComparator" ComponentId="PixelDiffComparator"/>
-        <Interface InterfaceId="imtsentra::IBaselineManager" ComponentId="BaselineManager"/>
-        <Interface InterfaceId="imtsentra::IScreenshotStorage" ComponentId="ScreenshotStorage"/>
+        <Interface InterfaceId="sentra::IImageComparator" ComponentId="PixelDiffComparator"/>
+        <Interface InterfaceId="sentra::IBaselineManager" ComponentId="BaselineManager"/>
+        <Interface InterfaceId="sentra::IScreenshotStorage" ComponentId="ScreenshotStorage"/>
     </ExportedInterfaces>
     <ExportedComponents/>
 </Acf>

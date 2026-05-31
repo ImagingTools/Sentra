@@ -1,5 +1,5 @@
 {
-  "name": "@imtsentra/browser-controller",
+  "name": "@sentra/browser-controller",
   "version": "0.1.0",
   "description": "Sentra Browser Controller — Playwright-based browser automation service",
   "main": "index.js",

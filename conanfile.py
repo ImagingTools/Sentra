@@ -2,8 +2,8 @@ from conan import ConanFile
 from conan.tools.cmake import CMake, cmake_layout, CMakeToolchain, CMakeDeps
 
 
-class ImtSentraConan(ConanFile):
-    name = "imtsentra"
+class SentraConan(ConanFile):
+    name = "sentra"
     version = "0.1.0"
     license = "Proprietary"
     author = "ImagingTools"
@@ -70,5 +70,5 @@ class ImtSentraConan(ConanFile):
         cmake.install()
 
     def package_info(self):
-        self.cpp_info.libs = ["imtsentra", "imtsentragql"]
+        self.cpp_info.libs = ["sentra", "sentragql"]
         self.cpp_info.includedirs = ["Include"]

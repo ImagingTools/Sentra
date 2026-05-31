@@ -9,7 +9,7 @@
 Варианты написания:
 - **Sentra** — основное название продукта
 - **Sentra VT** — полное (Visual Testing)
-- **ImtSentra** — техническое имя пакета/репозитория
+- **Sentra** — техническое имя пакета/репозитория
 
 ---
 
@@ -475,9 +475,9 @@ AI самостоятельно определяет:
 ### Структура проекта
 
 ```
-ImtSentra/                           # Отдельный репозиторий
+Sentra/                           # Отдельный репозиторий
 ├── Include/
-│   ├── imtsentra/                    # Core library
+│   ├── sentra/                    # Core library
 │   │   ├── IScenarioGraph.h
 │   │   ├── CScenarioGraphComp.h/.cpp
 │   │   ├── IScenarioExecutor.h
@@ -490,18 +490,18 @@ ImtSentra/                           # Отдельный репозиторий
 │   │   ├── CBaselineManagerComp.h/.cpp
 │   │   ├── CScreenshotStorageComp.h/.cpp
 │   │   ├── CAppMapBuilderComp.h/.cpp
-│   │   └── imtsentra.h
-│   └── imtsentragql/                 # GraphQL API
+│   │   └── sentra.h
+│   └── sentragql/                 # GraphQL API
 │       ├── CScenarioServiceControllerComp.h/.cpp
 │       ├── CExecutionServiceControllerComp.h/.cpp
-│       └── imtsentragql.h
-├── Sdl/imtsentra/1.0/                # SDL schemas
+│       └── sentragql.h
+├── Sdl/sentra/1.0/                # SDL schemas
 │   ├── Scenario.sdl
 │   ├── Execution.sdl
 │   ├── Baseline.sdl
 │   ├── SemanticModel.sdl
 │   └── AppMap.sdl
-├── Qml/imtsentragui/                 # QML UI
+├── Qml/sentragui/                 # QML UI
 │   ├── GraphEditor/
 │   ├── Timeline/
 │   ├── DiffViewer/
@@ -515,8 +515,8 @@ ImtSentra/                           # Отдельный репозиторий
 │   ├── Exploration/                 # Auto-exploration agent
 │   └── CLI/                         # CLI runner
 ├── Impl/                            # ACF component packages (Pck)
-│   ├── ImtSentraPck/                # Core package registration
-│   └── ImtSentraGqlPck/             # GraphQL package registration
+│   ├── SentraPck/                # Core package registration
+│   └── SentraGqlPck/             # GraphQL package registration
 ├── Partitura/                       # ACF assemblies
 │   └── SentraCoreVoce.arp/          # .acc wiring + .accl layout
 ├── Tests/
@@ -539,7 +539,7 @@ ImtSentra/                           # Отдельный репозиторий
 
 ```graphql
 schema {
-    namespace: imtsentra
+    namespace: sentra
     version: 1.0
 }
 

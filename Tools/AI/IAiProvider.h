@@ -8,7 +8,7 @@
 // Standard includes
 #include <optional>
 
-namespace imtsentra
+namespace sentra
 {
 
 /**
@@ -104,4 +104,4 @@ public:
     virtual bool IsAvailable() const = 0;
 };
 
-} // namespace imtsentra
+} // namespace sentra

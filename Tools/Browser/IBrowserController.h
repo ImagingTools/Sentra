@@ -7,7 +7,7 @@
 // Standard includes
 #include <optional>
 
-namespace imtsentra
+namespace sentra
 {
 
 /**
@@ -102,4 +102,4 @@ public:
     virtual void Close() = 0;
 };
 
-} // namespace imtsentra
+} // namespace sentra

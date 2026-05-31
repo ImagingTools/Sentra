@@ -1,5 +1,0 @@
-module imtsentragui
-GraphEditor 1.0 GraphEditor/GraphEditor.qml
-ExecutionTimeline 1.0 Timeline/ExecutionTimeline.qml
-DiffViewer 1.0 DiffViewer/DiffViewer.qml
-AppMapViewer 1.0 AppMap/AppMapViewer.qml

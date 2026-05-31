@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #pragma once
 
-#include <imtsentra/IAiProvider.h>
+#include <sentra/IAiProvider.h>
 
 // Qt includes
 #include <QtCore/QHash>
@@ -11,7 +11,7 @@
 // Standard includes
 #include <memory>
 
-namespace imtsentra
+namespace sentra
 {
 
 /**
@@ -91,4 +91,4 @@ private:
     IAiProvider* GetProvider() const;
 };
 
-} // namespace imtsentra
+} // namespace sentra

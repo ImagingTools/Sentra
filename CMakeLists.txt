@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(ImtSentra VERSION 0.1.0 LANGUAGES CXX)
+project(Sentra VERSION 0.1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -23,25 +23,25 @@ find_package(iimg REQUIRED)
 find_package(iipr REQUIRED)
 
 # Core library
-add_library(imtsentra
-    Include/imtsentra/CScenarioGraphComp.cpp
-    Include/imtsentra/CScenarioExecutorComp.cpp
-    Include/imtsentra/CNodeActionFactory.cpp
-    Include/imtsentra/CPixelDiffComparatorComp.cpp
-    Include/imtsentra/CBaselineManagerComp.cpp
-    Include/imtsentra/CScreenshotStorageComp.cpp
-    Include/imtsentra/CAppMapBuilderComp.cpp
-    Include/imtsentra/CExecutionEngineComp.cpp
-    Impl/ImtSentraPck/ImtSentraPck.cpp
+add_library(sentra
+    Include/sentra/CScenarioGraphComp.cpp
+    Include/sentra/CScenarioExecutorComp.cpp
+    Include/sentra/CNodeActionFactory.cpp
+    Include/sentra/CPixelDiffComparatorComp.cpp
+    Include/sentra/CBaselineManagerComp.cpp
+    Include/sentra/CScreenshotStorageComp.cpp
+    Include/sentra/CAppMapBuilderComp.cpp
+    Include/sentra/CExecutionEngineComp.cpp
+    Impl/SentraPck/SentraPck.cpp
 )
 
-target_include_directories(imtsentra PUBLIC
+target_include_directories(sentra PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/Include
     ${CMAKE_CURRENT_SOURCE_DIR}/Tools/Browser
     ${CMAKE_CURRENT_SOURCE_DIR}/Tools/AI
 )
 
-target_link_libraries(imtsentra PUBLIC
+target_link_libraries(sentra PUBLIC
     Qt6::Core
     Qt6::Network
     Qt6::WebSockets
@@ -50,18 +50,18 @@ target_link_libraries(imtsentra PUBLIC
 )
 
 # GraphQL API library
-add_library(imtsentragql
-    Include/imtsentragql/CScenarioServiceControllerComp.cpp
-    Include/imtsentragql/CExecutionServiceControllerComp.cpp
-    Impl/ImtSentraGqlPck/ImtSentraGqlPck.cpp
+add_library(sentragql
+    Include/sentragql/CScenarioServiceControllerComp.cpp
+    Include/sentragql/CExecutionServiceControllerComp.cpp
+    Impl/SentraGqlPck/SentraGqlPck.cpp
 )
 
-target_include_directories(imtsentragql PUBLIC
+target_include_directories(sentragql PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/Include
 )
 
-target_link_libraries(imtsentragql PUBLIC
-    imtsentra
+target_link_libraries(sentragql PUBLIC
+    sentra
     Qt6::Core
     Qt6::Network
 )
@@ -72,8 +72,8 @@ if(SENTRA_BUILD_CLI)
         Tools/CLI/main.cpp
     )
     target_link_libraries(sentra-cli PRIVATE
-        imtsentra
-        imtsentragql
+        sentra
+        sentragql
         Qt6::Core
     )
 endif()
@@ -84,20 +84,20 @@ if(SENTRA_BUILD_GUI)
         Qml/main.cpp
     )
     target_link_libraries(sentra-gui PRIVATE
-        imtsentra
-        imtsentragql
+        sentra
+        sentragql
         Qt6::Core
         Qt6::Gui
         Qt6::Quick
     )
     qt_add_qml_module(sentra-gui
-        URI imtsentragui
+        URI sentragui
         VERSION 1.0
         QML_FILES
-            Qml/imtsentragui/GraphEditor/GraphEditor.qml
-            Qml/imtsentragui/Timeline/ExecutionTimeline.qml
-            Qml/imtsentragui/DiffViewer/DiffViewer.qml
-            Qml/imtsentragui/AppMap/AppMapViewer.qml
+            Qml/sentragui/GraphEditor/GraphEditor.qml
+            Qml/sentragui/Timeline/ExecutionTimeline.qml
+            Qml/sentragui/DiffViewer/DiffViewer.qml
+            Qml/sentragui/AppMap/AppMapViewer.qml
     )
 endif()
 
@@ -110,7 +110,7 @@ if(SENTRA_BUILD_TESTS)
         Tests/ScenarioEngineTest/tst_scenario_graph.cpp
     )
     target_link_libraries(ScenarioEngineTest PRIVATE
-        imtsentra
+        sentra
         Qt6::Test
     )
     add_test(NAME ScenarioEngineTest COMMAND ScenarioEngineTest)
@@ -119,7 +119,7 @@ if(SENTRA_BUILD_TESTS)
         Tests/ImageComparisonTest/tst_image_comparison.cpp
     )
     target_link_libraries(ImageComparisonTest PRIVATE
-        imtsentra
+        sentra
         Qt6::Test
     )
     add_test(NAME ImageComparisonTest COMMAND ImageComparisonTest)
