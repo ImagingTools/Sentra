@@ -1,13 +1,8 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #include <imtsentragql/CExecutionServiceControllerComp.h>
 
-namespace imtsentra
+namespace imtsentragql
 {
-namespace gql
-{
-
-CExecutionServiceControllerComp::CExecutionServiceControllerComp() = default;
-CExecutionServiceControllerComp::~CExecutionServiceControllerComp() = default;
 
 std::string CExecutionServiceControllerComp::GetExecution(const std::string& executionId) const {
     // TODO: Get execution details
@@ -47,5 +42,4 @@ void CExecutionServiceControllerComp::SubscribeNodeCompleted(const std::string& 
     // TODO: Register subscription
 }
 
-} // namespace gql
-} // namespace imtsentra
+} // namespace imtsentragql

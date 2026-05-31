@@ -7,9 +7,6 @@
 namespace imtsentra
 {
 
-CAppMapBuilderComp::CAppMapBuilderComp() = default;
-CAppMapBuilderComp::~CAppMapBuilderComp() = default;
-
 void CAppMapBuilderComp::RecordScreen(
     const std::string& url,
     const std::string& title,

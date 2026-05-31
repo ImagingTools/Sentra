@@ -10,9 +10,6 @@
 namespace imtsentra
 {
 
-CPixelDiffComparatorComp::CPixelDiffComparatorComp() = default;
-CPixelDiffComparatorComp::~CPixelDiffComparatorComp() = default;
-
 ComparisonResult CPixelDiffComparatorComp::Compare(
     const iimg::IBitmap& baseline,
     const iimg::IBitmap& actual,

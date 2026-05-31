@@ -1,11 +1,16 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #pragma once
 
+// ACF includes
+#include <imtsentra/IScenarioExecutor.h>
+#include <istd/IPolymorphic.h>
+#include <istd/TUniqueInterfacePtr.h>
+
+// Standard includes
 #include <string>
 #include <vector>
 #include <memory>
 #include <functional>
-#include <imtsentra/IScenarioExecutor.h>
 
 namespace imtsentra
 {
@@ -28,11 +33,12 @@ struct EngineConfig {
  *
  * Orchestrates scenario execution including parallel execution,
  * retry logic, timeout management, and conditional branching.
+ *
+ * \ingroup imtsentra
  */
-class IExecutionEngine {
+class IExecutionEngine: virtual public istd::IPolymorphic
+{
 public:
-    virtual ~IExecutionEngine() = default;
-
     /**
      * \brief Queue a scenario for execution
      * \param graph Scenario graph to execute
@@ -75,5 +81,7 @@ public:
      */
     virtual void SetConfig(const EngineConfig& config) = 0;
 };
+
+typedef istd::TUniqueInterfacePtr<IExecutionEngine> IExecutionEngineUniquePtr;
 
 } // namespace imtsentra

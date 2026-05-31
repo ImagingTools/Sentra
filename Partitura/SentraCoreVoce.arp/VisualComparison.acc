@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Acf>
+    <AcfHeader>
+        <VersionInfos>
+            <Version Id="0" Number="6390" Description="ACF"/>
+            <Version Id="1" Number="2306" Description="ACF-Solutions"/>
+            <Version Id="1023" Number="395264" Description="Qt Framework"/>
+        </VersionInfos>
+    </AcfHeader>
+    <Description>Sentra visual comparison assembly: pixel comparator, baseline manager and screenshot storage.</Description>
+    <Keywords></Keywords>
+    <ElementsList>
+        <Element Id="PixelDiffComparator" PackageId="ImtSentraPck" ComponentId="PixelDiffComparator">
+            <Data IsEnabled="true" Flags="0">
+                <AttributeInfoMap/>
+            </Data>
+        </Element>
+        <Element Id="BaselineManager" PackageId="ImtSentraPck" ComponentId="BaselineManager">
+            <Data IsEnabled="true" Flags="0">
+                <AttributeInfoMap/>
+            </Data>
+        </Element>
+        <Element Id="ScreenshotStorage" PackageId="ImtSentraPck" ComponentId="ScreenshotStorage">
+            <Data IsEnabled="true" Flags="0">
+                <AttributeInfoMap>
+                    <AttributeInfo Id="BasePath" Type="Text" ExportId="">
+                        <Data IsEnabled="true" Value="screenshots"/>
+                    </AttributeInfo>
+                </AttributeInfoMap>
+            </Data>
+        </Element>
+    </ElementsList>
+    <EmbeddedRegistriesList/>
+    <ExportedInterfaces>
+        <Interface InterfaceId="imtsentra::IImageComparator" ComponentId="PixelDiffComparator"/>
+        <Interface InterfaceId="imtsentra::IBaselineManager" ComponentId="BaselineManager"/>
+        <Interface InterfaceId="imtsentra::IScreenshotStorage" ComponentId="ScreenshotStorage"/>
+    </ExportedInterfaces>
+    <ExportedComponents/>
+</Acf>

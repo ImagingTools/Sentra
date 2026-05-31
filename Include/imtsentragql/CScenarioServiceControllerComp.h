@@ -1,13 +1,16 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #pragma once
 
+// ACF includes
+#include <icomp/CComponentBase.h>
+#include <istd/IPolymorphic.h>
+
+// Standard includes
 #include <string>
 #include <vector>
 #include <optional>
 
-namespace imtsentra
-{
-namespace gql
+namespace imtsentragql
 {
 
 /**
@@ -18,11 +21,19 @@ namespace gql
  * - createScenario / updateScenario / deleteScenario
  * - duplicateScenario
  * - exportScenario / importScenario
+ *
+ * \ingroup imtsentragql
  */
-class CScenarioServiceControllerComp {
+class CScenarioServiceControllerComp:
+        public icomp::CComponentBase,
+        virtual public istd::IPolymorphic
+{
 public:
-    CScenarioServiceControllerComp();
-    ~CScenarioServiceControllerComp();
+    typedef icomp::CComponentBase BaseClass;
+
+    I_BEGIN_COMPONENT(CScenarioServiceControllerComp)
+        I_REGISTER_INTERFACE(istd::IPolymorphic);
+    I_END_COMPONENT
 
     // Query resolvers
     std::string ListScenarios(const std::string& projectId) const;
@@ -39,5 +50,4 @@ public:
     std::string ImportScenario(const std::string& data, const std::string& format);
 };
 
-} // namespace gql
-} // namespace imtsentra
+} // namespace imtsentragql

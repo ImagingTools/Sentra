@@ -1,8 +1,13 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #include <imtsentra/CScreenshotStorageComp.h>
 
+// Acf includes
 #include <iimg/IBitmap.h>
 
+// Qt includes
+#include <QtCore/QByteArray>
+
+// Standard includes
 #include <filesystem>
 
 namespace fs = std::filesystem;
@@ -10,12 +15,12 @@ namespace fs = std::filesystem;
 namespace imtsentra
 {
 
-CScreenshotStorageComp::CScreenshotStorageComp(const std::string& basePath)
-    : m_basePath(basePath) {
-    fs::create_directories(basePath);
-}
+void CScreenshotStorageComp::OnComponentCreated() {
+    BaseClass::OnComponentCreated();
 
-CScreenshotStorageComp::~CScreenshotStorageComp() = default;
+    m_basePath = (*m_basePathAttrPtr).toStdString();
+    fs::create_directories(m_basePath);
+}
 
 std::string CScreenshotStorageComp::StoreExecutionScreenshot(
     const std::string& executionId,

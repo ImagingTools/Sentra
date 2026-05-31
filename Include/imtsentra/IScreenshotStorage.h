@@ -1,8 +1,12 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #pragma once
 
+// ACF includes
 #include <iimg/IBitmap.h>
+#include <istd/IPolymorphic.h>
+#include <istd/TUniqueInterfacePtr.h>
 
+// Standard includes
 #include <string>
 #include <vector>
 #include <optional>
@@ -20,11 +24,12 @@ namespace imtsentra
  *   screenshots/baselines/{scenarioId}/{nodeId}/baseline.png
  *   screenshots/executions/{executionId}/{nodeId}/actual.png
  *   diffs/{executionId}/{nodeId}/diff.png
+ *
+ * \ingroup imtsentra
  */
-class IScreenshotStorage {
+class IScreenshotStorage: virtual public istd::IPolymorphic
+{
 public:
-    virtual ~IScreenshotStorage() = default;
-
     /**
      * \brief Store a screenshot from execution
      * \param executionId Execution identifier
@@ -91,5 +96,7 @@ public:
      */
     virtual size_t GetTotalStorageSize() const = 0;
 };
+
+typedef istd::TUniqueInterfacePtr<IScreenshotStorage> IScreenshotStorageUniquePtr;
 
 } // namespace imtsentra

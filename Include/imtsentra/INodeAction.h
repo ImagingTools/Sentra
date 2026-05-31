@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #pragma once
 
+// ACF includes
+#include <istd/IPolymorphic.h>
+#include <istd/TUniqueInterfacePtr.h>
+
+// Standard includes
 #include <string>
 #include <memory>
 #include <optional>
@@ -36,11 +41,12 @@ struct ActionResult {
  *
  * Each node type has a corresponding INodeAction implementation
  * that knows how to execute the intent described in the node config.
+ *
+ * \ingroup imtsentra
  */
-class INodeAction {
+class INodeAction: virtual public istd::IPolymorphic
+{
 public:
-    virtual ~INodeAction() = default;
-
     /**
      * \brief Execute the action with given context
      * \param config JSON configuration from ScenarioNode::config
@@ -62,5 +68,7 @@ public:
      */
     virtual std::string Describe(const std::string& config) const = 0;
 };
+
+typedef istd::TUniqueInterfacePtr<INodeAction> INodeActionUniquePtr;
 
 } // namespace imtsentra

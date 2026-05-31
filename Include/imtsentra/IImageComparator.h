@@ -1,8 +1,13 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #pragma once
 
+// ACF includes
 #include <iimg/IBitmap.h>
+#include <istd/istd.h>
+#include <istd/IPolymorphic.h>
+#include <istd/TUniqueInterfacePtr.h>
 
+// Standard includes
 #include <string>
 #include <vector>
 #include <optional>
@@ -12,6 +17,8 @@ namespace imtsentra
 
 /**
  * \brief Comparison algorithm type
+ *
+ * \ingroup imtsentra
  */
 enum ComparisonAlgorithm
 {
@@ -20,6 +27,11 @@ enum ComparisonAlgorithm
     CA_STRUCTURAL_SIMILARITY,  // SSIM
     CA_LAYOUT_SHIFT
 };
+I_DECLARE_ENUM(ComparisonAlgorithm,
+            CA_PIXEL_DIFF,
+            CA_PERCEPTUAL_DIFF,
+            CA_STRUCTURAL_SIMILARITY,
+            CA_LAYOUT_SHIFT);
 
 /**
  * \brief Region to ignore during comparison
@@ -60,11 +72,12 @@ struct ComparisonResult {
  * Uses iimg::IBitmap from the Acf framework for image representation
  * and supports multiple comparison strategies including pixel-by-pixel,
  * perceptual diff, SSIM, and layout shift detection.
+ *
+ * \ingroup imtsentra
  */
-class IImageComparator {
+class IImageComparator: virtual public istd::IPolymorphic
+{
 public:
-    virtual ~IImageComparator() = default;
-
     /**
      * \brief Compare two images provided as bitmaps
      * \param baseline Reference to the baseline bitmap
@@ -98,5 +111,7 @@ public:
      */
     virtual ComparisonAlgorithm GetAlgorithm() const = 0;
 };
+
+typedef istd::TUniqueInterfacePtr<IImageComparator> IImageComparatorUniquePtr;
 
 } // namespace imtsentra

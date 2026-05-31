@@ -7,9 +7,6 @@
 namespace imtsentra
 {
 
-CScenarioExecutorComp::CScenarioExecutorComp() = default;
-CScenarioExecutorComp::~CScenarioExecutorComp() = default;
-
 std::string CScenarioExecutorComp::Execute(
     std::shared_ptr<IScenarioGraph> graph,
     const ExecutionConfig& config

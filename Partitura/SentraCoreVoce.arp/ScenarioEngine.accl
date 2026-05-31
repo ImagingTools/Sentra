@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Acf>
+    <AcfHeader>
+        <VersionInfos>
+            <Version Id="0" Number="6390" Description="ACF"/>
+            <Version Id="1" Number="2306" Description="ACF-Solutions"/>
+            <Version Id="1023" Number="395264" Description="Qt Framework"/>
+        </VersionInfos>
+    </AcfHeader>
+    <PositionMap>
+        <Element ComponentName="ScenarioGraph" X="275" Y="475" Note=""/>
+        <Element ComponentName="ScenarioExecutor" X="575" Y="300" Note=""/>
+        <Element ComponentName="ExecutionEngine" X="575" Y="125" Note=""/>
+    </PositionMap>
+    <EmbeddedRegistries/>
+</Acf>

@@ -1,13 +1,16 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #pragma once
 
+// ACF includes
+#include <icomp/CComponentBase.h>
+#include <istd/IPolymorphic.h>
+
+// Standard includes
 #include <string>
 #include <vector>
 #include <functional>
 
-namespace imtsentra
-{
-namespace gql
+namespace imtsentragql
 {
 
 /**
@@ -20,11 +23,19 @@ namespace gql
  * - StopExecution(executionId)
  * - RetryExecution(executionId, fromNodeId)
  * - Subscriptions: onExecutionProgress, onNodeCompleted
+ *
+ * \ingroup imtsentragql
  */
-class CExecutionServiceControllerComp {
+class CExecutionServiceControllerComp:
+        public icomp::CComponentBase,
+        virtual public istd::IPolymorphic
+{
 public:
-    CExecutionServiceControllerComp();
-    ~CExecutionServiceControllerComp();
+    typedef icomp::CComponentBase BaseClass;
+
+    I_BEGIN_COMPONENT(CExecutionServiceControllerComp)
+        I_REGISTER_INTERFACE(istd::IPolymorphic);
+    I_END_COMPONENT
 
     // Query resolvers
     std::string GetExecution(const std::string& executionId) const;
@@ -42,5 +53,4 @@ public:
     void SubscribeNodeCompleted(const std::string& executionId, ProgressHandler handler);
 };
 
-} // namespace gql
-} // namespace imtsentra
+} // namespace imtsentragql

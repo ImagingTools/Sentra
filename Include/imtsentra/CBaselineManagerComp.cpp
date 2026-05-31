@@ -6,9 +6,6 @@
 namespace imtsentra
 {
 
-CBaselineManagerComp::CBaselineManagerComp() = default;
-CBaselineManagerComp::~CBaselineManagerComp() = default;
-
 std::optional<BaselineEntry> CBaselineManagerComp::GetBaseline(
     const std::string& scenarioId,
     const std::string& nodeId

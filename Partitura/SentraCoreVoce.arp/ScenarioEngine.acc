@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Acf>
+    <AcfHeader>
+        <VersionInfos>
+            <Version Id="0" Number="6390" Description="ACF"/>
+            <Version Id="1" Number="2306" Description="ACF-Solutions"/>
+            <Version Id="1023" Number="395264" Description="Qt Framework"/>
+        </VersionInfos>
+    </AcfHeader>
+    <Description>Sentra core engine assembly: scenario graph, executor and execution engine.</Description>
+    <Keywords></Keywords>
+    <ElementsList>
+        <Element Id="ScenarioGraph" PackageId="ImtSentraPck" ComponentId="ScenarioGraph">
+            <Data IsEnabled="true" Flags="2">
+                <AttributeInfoMap/>
+            </Data>
+        </Element>
+        <Element Id="ScenarioExecutor" PackageId="ImtSentraPck" ComponentId="ScenarioExecutor">
+            <Data IsEnabled="true" Flags="0">
+                <AttributeInfoMap/>
+            </Data>
+        </Element>
+        <Element Id="ExecutionEngine" PackageId="ImtSentraPck" ComponentId="ExecutionEngine">
+            <Data IsEnabled="true" Flags="0">
+                <AttributeInfoMap/>
+            </Data>
+        </Element>
+    </ElementsList>
+    <EmbeddedRegistriesList/>
+    <ExportedInterfaces>
+        <Interface InterfaceId="imtsentra::IScenarioGraph" ComponentId="ScenarioGraph"/>
+        <Interface InterfaceId="imtsentra::IScenarioExecutor" ComponentId="ScenarioExecutor"/>
+        <Interface InterfaceId="imtsentra::IExecutionEngine" ComponentId="ExecutionEngine"/>
+        <Interface InterfaceId="istd::IPolymorphic" ComponentId="ExecutionEngine"/>
+    </ExportedInterfaces>
+    <ExportedComponents/>
+</Acf>

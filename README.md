@@ -16,8 +16,8 @@
 ```
 ImtSentra/
 ├── Include/
-│   ├── imtsentra/          # Core library interfaces & components
-│   └── imtsentragql/       # GraphQL API controllers
+│   ├── imtsentra/          # Core interfaces (I*.h) + components (C*Comp.h/.cpp)
+│   └── imtsentragql/       # GraphQL API controllers (C*Comp.h/.cpp)
 ├── Sdl/imtsentra/1.0/      # SDL schemas (Scenario, Execution, Baseline, etc.)
 ├── Qml/imtsentragui/       # QML UI components
 │   ├── GraphEditor/        # Visual graph scenario editor
@@ -30,8 +30,10 @@ ImtSentra/
 │   ├── Semantic/           # Semantic UI model builder
 │   ├── Exploration/        # Autonomous exploration agent
 │   └── CLI/                # Command-line interface
-├── Impl/                   # C++ implementations
-├── Partitura/              # ACF component wiring (.acc/.arp)
+├── Impl/                   # ACF component packages
+│   ├── ImtSentraPck/       # Core package (I_EXPORT_PACKAGE/I_EXPORT_COMPONENT)
+│   └── ImtSentraGqlPck/    # GraphQL package
+├── Partitura/              # ACF component wiring (SentraCoreVoce.arp/*.acc + *.accl)
 ├── Tests/                  # Unit & integration tests
 ├── Config/                 # Configuration files
 ├── Docs/                   # Documentation

@@ -514,8 +514,11 @@ ImtSentra/                           # Отдельный репозиторий
 │   ├── Semantic/                    # Semantic model builder
 │   ├── Exploration/                 # Auto-exploration agent
 │   └── CLI/                         # CLI runner
-├── Impl/                            # Implementation packages (Pck)
-├── Partitura/                       # ACF component wiring (.acc/.arp)
+├── Impl/                            # ACF component packages (Pck)
+│   ├── ImtSentraPck/                # Core package registration
+│   └── ImtSentraGqlPck/             # GraphQL package registration
+├── Partitura/                       # ACF assemblies
+│   └── SentraCoreVoce.arp/          # .acc wiring + .accl layout
 ├── Tests/
 │   ├── ScenarioEngineTest/
 │   ├── ImageComparisonTest/

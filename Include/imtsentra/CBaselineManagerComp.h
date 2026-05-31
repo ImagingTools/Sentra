@@ -1,7 +1,13 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #pragma once
 
+// ACF includes
+#include <icomp/CComponentBase.h>
+
+// ImtSentra includes
 #include <imtsentra/IBaselineManager.h>
+
+// Standard includes
 #include <unordered_map>
 #include <mutex>
 
@@ -9,16 +15,25 @@ namespace imtsentra
 {
 
 /**
- * \brief ACF Component implementing IBaselineManager
+ * \brief ACF component implementing IBaselineManager
  *
  * Manages baseline images with versioning, approval workflows,
  * and configurable update strategies.
+ *
+ * \ingroup imtsentra
  */
-class CBaselineManagerComp : public IBaselineManager {
+class CBaselineManagerComp:
+        public icomp::CComponentBase,
+        virtual public IBaselineManager
+{
 public:
-    CBaselineManagerComp();
-    ~CBaselineManagerComp() override;
+    typedef icomp::CComponentBase BaseClass;
 
+    I_BEGIN_COMPONENT(CBaselineManagerComp)
+        I_REGISTER_INTERFACE(IBaselineManager);
+    I_END_COMPONENT
+
+    // reimplemented (imtsentra::IBaselineManager)
     std::optional<BaselineEntry> GetBaseline(
         const std::string& scenarioId,
         const std::string& nodeId

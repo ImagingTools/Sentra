@@ -9,14 +9,14 @@
 namespace imtsentra
 {
 
-CScenarioGraphComp::CScenarioGraphComp() {
+void CScenarioGraphComp::OnComponentCreated() {
+    BaseClass::OnComponentCreated();
+
     // Generate unique ID
     auto now = std::chrono::system_clock::now();
     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
     m_id = "scenario-" + std::to_string(ms);
 }
-
-CScenarioGraphComp::~CScenarioGraphComp() = default;
 
 std::string CScenarioGraphComp::GetId() const { return m_id; }
 std::string CScenarioGraphComp::GetName() const { return m_name; }

@@ -2,12 +2,27 @@
 #pragma once
 
 /**
- * \file imtsentragql.h
- * \brief GraphQL API layer for Sentra
- *
- * Provides GraphQL service controllers for scenarios, executions,
- * baselines, and AI endpoints.
- */
+\file imtsentragql.h
+\brief Main header file for the imtsentragql module - Sentra GraphQL API Layer
+*/
 
-#include <imtsentra/CScenarioServiceControllerComp.h>
-#include <imtsentra/CExecutionServiceControllerComp.h>
+/**
+\defgroup imtsentragql imtsentragql
+\brief Sentra GraphQL API Layer Module
+
+The \b imtsentragql module bridges the imtsentra domain model with the
+GraphQL API. It provides service controller components that translate
+between C++ domain objects and GraphQL representation types.
+
+\section imtsentragql_overview Overview
+- \b CScenarioServiceControllerComp — scenario CRUD, duplicate, import/export
+- \b CExecutionServiceControllerComp — execution start/stop/retry and progress subscriptions
+
+\section imtsentragql_related Related Modules
+- \b imtsentra — domain model and execution engine
+*/
+
+#include <imtsentragql/CScenarioServiceControllerComp.h>
+#include <imtsentragql/CExecutionServiceControllerComp.h>
+
+namespace imtsentragql {}

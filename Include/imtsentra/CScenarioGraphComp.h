@@ -1,24 +1,38 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #pragma once
 
+// ACF includes
+#include <icomp/CComponentBase.h>
+
+// ImtSentra includes
 #include <imtsentra/IScenarioGraph.h>
+
+// Standard includes
 #include <unordered_map>
 
 namespace imtsentra
 {
 
 /**
- * \brief ACF Component implementing IScenarioGraph
+ * \brief ACF component implementing IScenarioGraph
  *
  * Provides a directed graph implementation with support for
  * topological ordering, cycle detection, and JSON serialization.
+ *
+ * \ingroup imtsentra
  */
-class CScenarioGraphComp : public IScenarioGraph {
+class CScenarioGraphComp:
+        public icomp::CComponentBase,
+        virtual public IScenarioGraph
+{
 public:
-    CScenarioGraphComp();
-    ~CScenarioGraphComp() override;
+    typedef icomp::CComponentBase BaseClass;
 
-    // IScenarioGraph implementation
+    I_BEGIN_COMPONENT(CScenarioGraphComp)
+        I_REGISTER_INTERFACE(IScenarioGraph);
+    I_END_COMPONENT
+
+    // reimplemented (imtsentra::IScenarioGraph)
     std::string GetId() const override;
     std::string GetName() const override;
     void SetName(const std::string& name) override;
@@ -47,6 +61,10 @@ public:
 
     std::string ToJson() const override;
     bool FromJson(const std::string& json) override;
+
+protected:
+    // reimplemented (icomp::CComponentBase)
+    void OnComponentCreated() override;
 
 private:
     std::string m_id;

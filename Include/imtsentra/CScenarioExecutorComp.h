@@ -1,7 +1,13 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #pragma once
 
+// ACF includes
+#include <icomp/CComponentBase.h>
+
+// ImtSentra includes
 #include <imtsentra/IScenarioExecutor.h>
+
+// Standard includes
 #include <mutex>
 #include <unordered_map>
 
@@ -9,16 +15,25 @@ namespace imtsentra
 {
 
 /**
- * \brief ACF Component implementing IScenarioExecutor
+ * \brief ACF component implementing IScenarioExecutor
  *
  * Executes scenario graphs by traversing nodes in topological order,
  * delegating each node to the appropriate INodeAction implementation.
+ *
+ * \ingroup imtsentra
  */
-class CScenarioExecutorComp : public IScenarioExecutor {
+class CScenarioExecutorComp:
+        public icomp::CComponentBase,
+        virtual public IScenarioExecutor
+{
 public:
-    CScenarioExecutorComp();
-    ~CScenarioExecutorComp() override;
+    typedef icomp::CComponentBase BaseClass;
 
+    I_BEGIN_COMPONENT(CScenarioExecutorComp)
+        I_REGISTER_INTERFACE(IScenarioExecutor);
+    I_END_COMPONENT
+
+    // reimplemented (imtsentra::IScenarioExecutor)
     std::string Execute(
         std::shared_ptr<IScenarioGraph> graph,
         const ExecutionConfig& config

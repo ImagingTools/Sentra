@@ -24,14 +24,15 @@ find_package(iipr REQUIRED)
 
 # Core library
 add_library(imtsentra
-    Impl/CScenarioGraphComp.cpp
-    Impl/CScenarioExecutorComp.cpp
-    Impl/CNodeActionFactory.cpp
-    Impl/CPixelDiffComparatorComp.cpp
-    Impl/CBaselineManagerComp.cpp
-    Impl/CScreenshotStorageComp.cpp
-    Impl/CAppMapBuilderComp.cpp
-    Impl/CExecutionEngineComp.cpp
+    Include/imtsentra/CScenarioGraphComp.cpp
+    Include/imtsentra/CScenarioExecutorComp.cpp
+    Include/imtsentra/CNodeActionFactory.cpp
+    Include/imtsentra/CPixelDiffComparatorComp.cpp
+    Include/imtsentra/CBaselineManagerComp.cpp
+    Include/imtsentra/CScreenshotStorageComp.cpp
+    Include/imtsentra/CAppMapBuilderComp.cpp
+    Include/imtsentra/CExecutionEngineComp.cpp
+    Impl/ImtSentraPck/ImtSentraPck.cpp
 )
 
 target_include_directories(imtsentra PUBLIC
@@ -50,8 +51,9 @@ target_link_libraries(imtsentra PUBLIC
 
 # GraphQL API library
 add_library(imtsentragql
-    Impl/CScenarioServiceControllerComp.cpp
-    Impl/CExecutionServiceControllerComp.cpp
+    Include/imtsentragql/CScenarioServiceControllerComp.cpp
+    Include/imtsentragql/CExecutionServiceControllerComp.cpp
+    Impl/ImtSentraGqlPck/ImtSentraGqlPck.cpp
 )
 
 target_include_directories(imtsentragql PUBLIC

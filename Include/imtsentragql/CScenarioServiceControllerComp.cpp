@@ -1,13 +1,8 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #include <imtsentragql/CScenarioServiceControllerComp.h>
 
-namespace imtsentra
+namespace imtsentragql
 {
-namespace gql
-{
-
-CScenarioServiceControllerComp::CScenarioServiceControllerComp() = default;
-CScenarioServiceControllerComp::~CScenarioServiceControllerComp() = default;
 
 std::string CScenarioServiceControllerComp::ListScenarios(const std::string& projectId) const {
     // TODO: Query scenarios from storage
@@ -49,5 +44,4 @@ std::string CScenarioServiceControllerComp::ImportScenario(const std::string& da
     return "{}";
 }
 
-} // namespace gql
-} // namespace imtsentra
+} // namespace imtsentragql

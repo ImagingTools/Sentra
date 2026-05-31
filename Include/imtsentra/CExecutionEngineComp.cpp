@@ -6,10 +6,10 @@
 namespace imtsentra
 {
 
-CExecutionEngineComp::CExecutionEngineComp() = default;
-
-CExecutionEngineComp::~CExecutionEngineComp() {
+void CExecutionEngineComp::OnComponentDestroyed() {
     Stop();
+
+    BaseClass::OnComponentDestroyed();
 }
 
 std::string CExecutionEngineComp::QueueExecution(

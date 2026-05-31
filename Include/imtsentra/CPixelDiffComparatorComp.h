@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #pragma once
 
+// ACF includes
+#include <icomp/CComponentBase.h>
+
+// ImtSentra includes
 #include <imtsentra/IImageComparator.h>
 
 namespace imtsentra
@@ -12,12 +16,21 @@ namespace imtsentra
  * Compares images pixel by pixel with configurable threshold
  * and anti-aliasing tolerance. Uses iimg::IBitmap for image
  * representation and iipr bitmap operations for diff calculation.
+ *
+ * \ingroup imtsentra
  */
-class CPixelDiffComparatorComp : public IImageComparator {
+class CPixelDiffComparatorComp:
+        public icomp::CComponentBase,
+        virtual public IImageComparator
+{
 public:
-    CPixelDiffComparatorComp();
-    ~CPixelDiffComparatorComp() override;
+    typedef icomp::CComponentBase BaseClass;
 
+    I_BEGIN_COMPONENT(CPixelDiffComparatorComp)
+        I_REGISTER_INTERFACE(IImageComparator);
+    I_END_COMPONENT
+
+    // reimplemented (imtsentra::IImageComparator)
     ComparisonResult Compare(
         const iimg::IBitmap& baseline,
         const iimg::IBitmap& actual,

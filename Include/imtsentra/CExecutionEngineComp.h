@@ -1,7 +1,13 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #pragma once
 
+// ACF includes
+#include <icomp/CComponentBase.h>
+
+// ImtSentra includes
 #include <imtsentra/IExecutionEngine.h>
+
+// Standard includes
 #include <mutex>
 #include <queue>
 #include <thread>
@@ -12,16 +18,25 @@ namespace imtsentra
 {
 
 /**
- * \brief ACF Component implementing IExecutionEngine
+ * \brief ACF component implementing IExecutionEngine
  *
  * Orchestrates scenario execution with support for parallel runs,
  * retry logic, and timeout management.
+ *
+ * \ingroup imtsentra
  */
-class CExecutionEngineComp : public IExecutionEngine {
+class CExecutionEngineComp:
+        public icomp::CComponentBase,
+        virtual public IExecutionEngine
+{
 public:
-    CExecutionEngineComp();
-    ~CExecutionEngineComp() override;
+    typedef icomp::CComponentBase BaseClass;
 
+    I_BEGIN_COMPONENT(CExecutionEngineComp)
+        I_REGISTER_INTERFACE(IExecutionEngine);
+    I_END_COMPONENT
+
+    // reimplemented (imtsentra::IExecutionEngine)
     std::string QueueExecution(
         std::shared_ptr<IScenarioGraph> graph,
         const ExecutionConfig& config
@@ -46,6 +61,10 @@ public:
      * \brief Stop the engine and wait for running executions to complete
      */
     void Stop();
+
+protected:
+    // reimplemented (icomp::CComponentBase)
+    void OnComponentDestroyed() override;
 
 private:
     struct QueuedExecution {

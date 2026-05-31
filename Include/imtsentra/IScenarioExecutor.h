@@ -1,6 +1,12 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #pragma once
 
+// ACF includes
+#include <istd/istd.h>
+#include <istd/IPolymorphic.h>
+#include <istd/TUniqueInterfacePtr.h>
+
+// Standard includes
 #include <string>
 #include <vector>
 #include <functional>
@@ -12,6 +18,8 @@ namespace imtsentra
 
 /**
  * \brief Execution status for individual nodes and overall execution
+ *
+ * \ingroup imtsentra
  */
 enum ExecutionStatus
 {
@@ -22,6 +30,13 @@ enum ExecutionStatus
     ES_SKIPPED,
     ES_TIMED_OUT
 };
+I_DECLARE_ENUM(ExecutionStatus,
+            ES_PENDING,
+            ES_RUNNING,
+            ES_PASSED,
+            ES_FAILED,
+            ES_SKIPPED,
+            ES_TIMED_OUT);
 
 /**
  * \brief Result of executing a single scenario node
@@ -67,11 +82,12 @@ class IScenarioGraph;
  *
  * Executes a scenario graph by traversing nodes in topological order,
  * resolving intents via AI, performing browser actions, and collecting results.
+ *
+ * \ingroup imtsentra
  */
-class IScenarioExecutor {
+class IScenarioExecutor: virtual public istd::IPolymorphic
+{
 public:
-    virtual ~IScenarioExecutor() = default;
-
     /**
      * \brief Start executing a scenario
      * \param graph The scenario graph to execute
@@ -115,5 +131,7 @@ public:
      */
     virtual void OnProgress(ExecutionProgressCallback callback) = 0;
 };
+
+typedef istd::TUniqueInterfacePtr<IScenarioExecutor> IScenarioExecutorUniquePtr;
 
 } // namespace imtsentra

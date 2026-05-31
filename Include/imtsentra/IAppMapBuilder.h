@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #pragma once
 
+// ACF includes
+#include <istd/IPolymorphic.h>
+#include <istd/TUniqueInterfacePtr.h>
+
+// Standard includes
 #include <string>
 #include <vector>
 #include <optional>
@@ -39,11 +44,12 @@ struct AppTransition {
  *
  * Automatically builds a graph of application screens and transitions
  * by tracking navigation during test executions.
+ *
+ * \ingroup imtsentra
  */
-class IAppMapBuilder {
+class IAppMapBuilder: virtual public istd::IPolymorphic
+{
 public:
-    virtual ~IAppMapBuilder() = default;
-
     /**
      * \brief Record a screen visit during execution
      * \param url Current URL
@@ -93,5 +99,7 @@ public:
      */
     virtual std::string ToJson() const = 0;
 };
+
+typedef istd::TUniqueInterfacePtr<IAppMapBuilder> IAppMapBuilderUniquePtr;
 
 } // namespace imtsentra
