@@ -1,0 +1,47 @@
+{
+    "sentra": {
+        "version": "0.1.0",
+        "server": {
+            "host": "0.0.0.0",
+            "port": 4000,
+            "graphql_endpoint": "/graphql"
+        },
+        "browser": {
+            "controller_port": 9515,
+            "headless": true,
+            "viewport": {
+                "width": 1920,
+                "height": 1080
+            },
+            "default_timeout_ms": 30000
+        },
+        "ai": {
+            "provider": "openai",
+            "model": "gpt-4-vision-preview",
+            "max_retries": 3,
+            "cache_ttl_seconds": 3600,
+            "confidence_threshold": 0.7
+        },
+        "storage": {
+            "data_dir": "./data",
+            "screenshots_dir": "./data/screenshots",
+            "database_path": "./data/sentra.mdbx"
+        },
+        "execution": {
+            "max_parallel": 4,
+            "default_timeout_ms": 30000,
+            "max_retries": 2,
+            "capture_screenshots": true,
+            "capture_dom_snapshots": true
+        },
+        "comparison": {
+            "default_algorithm": "pixel_diff",
+            "default_threshold": 0.01,
+            "anti_aliasing_tolerance": true
+        },
+        "baseline": {
+            "strategy": "manual",
+            "auto_accept_threshold": 0.001
+        }
+    }
+}

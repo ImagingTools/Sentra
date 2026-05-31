@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  sentra-engine:
+    build:
+      context: ../..
+      dockerfile: Tests/Docker/Dockerfile
+    ports:
+      - "4000:4000"
+      - "9515:9515"
+    environment:
+      - SENTRA_HEADLESS=true
+      - SENTRA_BROWSER_PORT=9515
+    volumes:
+      - sentra-data:/app/data
+      - sentra-screenshots:/app/screenshots
+    networks:
+      - sentra
+
+  sentra-browser:
+    build:
+      context: ../../Tools/Browser
+      dockerfile: Dockerfile.browser
+    ports:
+      - "9516:9515"
+    environment:
+      - SENTRA_BROWSER_PORT=9515
+    networks:
+      - sentra
+
+volumes:
+  sentra-data:
+  sentra-screenshots:
+
+networks:
+  sentra:
+    driver: bridge
