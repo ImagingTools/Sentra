@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #include <imtsentra/CScenarioGraphComp.h>
-#include <algorithm>
+
+// Qt includes
+#include <QtCore/QDateTime>
+
+// Standard includes
 #include <stdexcept>
-#include <sstream>
-#include <random>
-#include <chrono>
 
 namespace imtsentra
 {
@@ -13,29 +14,28 @@ void CScenarioGraphComp::OnComponentCreated() {
     BaseClass::OnComponentCreated();
 
     // Generate unique ID
-    auto now = std::chrono::system_clock::now();
-    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
-    m_id = "scenario-" + std::to_string(ms);
+    m_id = QStringLiteral("scenario-") + QString::number(QDateTime::currentMSecsSinceEpoch());
 }
 
-std::string CScenarioGraphComp::GetId() const { return m_id; }
-std::string CScenarioGraphComp::GetName() const { return m_name; }
-void CScenarioGraphComp::SetName(const std::string& name) { m_name = name; }
-std::optional<std::string> CScenarioGraphComp::GetDescription() const { return m_description; }
-void CScenarioGraphComp::SetDescription(const std::string& description) { m_description = description; }
+QString CScenarioGraphComp::GetId() const { return m_id; }
+QString CScenarioGraphComp::GetName() const { return m_name; }
+void CScenarioGraphComp::SetName(const QString& name) { m_name = name; }
+std::optional<QString> CScenarioGraphComp::GetDescription() const { return m_description; }
+void CScenarioGraphComp::SetDescription(const QString& description) { m_description = description; }
 
 void CScenarioGraphComp::AddNode(const ScenarioNode& node) {
-    if (m_nodes.count(node.id)) {
-        throw std::runtime_error("Node with id '" + node.id + "' already exists");
+    if (m_nodes.contains(node.id)) {
+        throw std::runtime_error(
+            QStringLiteral("Node with id '%1' already exists").arg(node.id).toStdString());
     }
     m_nodes[node.id] = node;
 }
 
-void CScenarioGraphComp::RemoveNode(const std::string& nodeId) {
-    m_nodes.erase(nodeId);
+void CScenarioGraphComp::RemoveNode(const QString& nodeId) {
+    m_nodes.remove(nodeId);
     // Remove all edges connected to this node
     for (auto it = m_edges.begin(); it != m_edges.end();) {
-        if (it->second.sourceNodeId == nodeId || it->second.targetNodeId == nodeId) {
+        if (it.value().sourceNodeId == nodeId || it.value().targetNodeId == nodeId) {
             it = m_edges.erase(it);
         } else {
             ++it;
@@ -44,131 +44,136 @@ void CScenarioGraphComp::RemoveNode(const std::string& nodeId) {
 }
 
 void CScenarioGraphComp::UpdateNode(const ScenarioNode& node) {
-    if (!m_nodes.count(node.id)) {
-        throw std::runtime_error("Node with id '" + node.id + "' not found");
+    if (!m_nodes.contains(node.id)) {
+        throw std::runtime_error(
+            QStringLiteral("Node with id '%1' not found").arg(node.id).toStdString());
     }
     m_nodes[node.id] = node;
 }
 
-std::optional<ScenarioNode> CScenarioGraphComp::GetNode(const std::string& nodeId) const {
+std::optional<ScenarioNode> CScenarioGraphComp::GetNode(const QString& nodeId) const {
     auto it = m_nodes.find(nodeId);
-    if (it != m_nodes.end()) return it->second;
+    if (it != m_nodes.end()) return it.value();
     return std::nullopt;
 }
 
-std::vector<ScenarioNode> CScenarioGraphComp::GetNodes() const {
-    std::vector<ScenarioNode> nodes;
+QList<ScenarioNode> CScenarioGraphComp::GetNodes() const {
+    QList<ScenarioNode> nodes;
     nodes.reserve(m_nodes.size());
-    for (const auto& [id, node] : m_nodes) {
+    for (const auto& node : m_nodes) {
         nodes.push_back(node);
     }
     return nodes;
 }
 
 void CScenarioGraphComp::AddEdge(const ScenarioEdge& edge) {
-    if (m_edges.count(edge.id)) {
-        throw std::runtime_error("Edge with id '" + edge.id + "' already exists");
+    if (m_edges.contains(edge.id)) {
+        throw std::runtime_error(
+            QStringLiteral("Edge with id '%1' already exists").arg(edge.id).toStdString());
     }
-    if (!m_nodes.count(edge.sourceNodeId)) {
-        throw std::runtime_error("Source node '" + edge.sourceNodeId + "' not found");
+    if (!m_nodes.contains(edge.sourceNodeId)) {
+        throw std::runtime_error(
+            QStringLiteral("Source node '%1' not found").arg(edge.sourceNodeId).toStdString());
     }
-    if (!m_nodes.count(edge.targetNodeId)) {
-        throw std::runtime_error("Target node '" + edge.targetNodeId + "' not found");
+    if (!m_nodes.contains(edge.targetNodeId)) {
+        throw std::runtime_error(
+            QStringLiteral("Target node '%1' not found").arg(edge.targetNodeId).toStdString());
     }
     m_edges[edge.id] = edge;
 }
 
-void CScenarioGraphComp::RemoveEdge(const std::string& edgeId) {
-    m_edges.erase(edgeId);
+void CScenarioGraphComp::RemoveEdge(const QString& edgeId) {
+    m_edges.remove(edgeId);
 }
 
 void CScenarioGraphComp::UpdateEdge(const ScenarioEdge& edge) {
-    if (!m_edges.count(edge.id)) {
-        throw std::runtime_error("Edge with id '" + edge.id + "' not found");
+    if (!m_edges.contains(edge.id)) {
+        throw std::runtime_error(
+            QStringLiteral("Edge with id '%1' not found").arg(edge.id).toStdString());
     }
     m_edges[edge.id] = edge;
 }
 
-std::optional<ScenarioEdge> CScenarioGraphComp::GetEdge(const std::string& edgeId) const {
+std::optional<ScenarioEdge> CScenarioGraphComp::GetEdge(const QString& edgeId) const {
     auto it = m_edges.find(edgeId);
-    if (it != m_edges.end()) return it->second;
+    if (it != m_edges.end()) return it.value();
     return std::nullopt;
 }
 
-std::vector<ScenarioEdge> CScenarioGraphComp::GetEdges() const {
-    std::vector<ScenarioEdge> edges;
+QList<ScenarioEdge> CScenarioGraphComp::GetEdges() const {
+    QList<ScenarioEdge> edges;
     edges.reserve(m_edges.size());
-    for (const auto& [id, edge] : m_edges) {
+    for (const auto& edge : m_edges) {
         edges.push_back(edge);
     }
     return edges;
 }
 
-std::vector<ScenarioNode> CScenarioGraphComp::GetSuccessors(const std::string& nodeId) const {
-    std::vector<ScenarioNode> successors;
-    for (const auto& [id, edge] : m_edges) {
+QList<ScenarioNode> CScenarioGraphComp::GetSuccessors(const QString& nodeId) const {
+    QList<ScenarioNode> successors;
+    for (const auto& edge : m_edges) {
         if (edge.sourceNodeId == nodeId) {
             auto it = m_nodes.find(edge.targetNodeId);
             if (it != m_nodes.end()) {
-                successors.push_back(it->second);
+                successors.push_back(it.value());
             }
         }
     }
     return successors;
 }
 
-std::vector<ScenarioNode> CScenarioGraphComp::GetPredecessors(const std::string& nodeId) const {
-    std::vector<ScenarioNode> predecessors;
-    for (const auto& [id, edge] : m_edges) {
+QList<ScenarioNode> CScenarioGraphComp::GetPredecessors(const QString& nodeId) const {
+    QList<ScenarioNode> predecessors;
+    for (const auto& edge : m_edges) {
         if (edge.targetNodeId == nodeId) {
             auto it = m_nodes.find(edge.sourceNodeId);
             if (it != m_nodes.end()) {
-                predecessors.push_back(it->second);
+                predecessors.push_back(it.value());
             }
         }
     }
     return predecessors;
 }
 
-std::vector<ScenarioNode> CScenarioGraphComp::GetRootNodes() const {
-    std::vector<ScenarioNode> roots;
-    for (const auto& [id, node] : m_nodes) {
+QList<ScenarioNode> CScenarioGraphComp::GetRootNodes() const {
+    QList<ScenarioNode> roots;
+    for (auto nodeIt = m_nodes.cbegin(); nodeIt != m_nodes.cend(); ++nodeIt) {
         bool hasIncoming = false;
-        for (const auto& [eid, edge] : m_edges) {
-            if (edge.targetNodeId == id) {
+        for (const auto& edge : m_edges) {
+            if (edge.targetNodeId == nodeIt.key()) {
                 hasIncoming = true;
                 break;
             }
         }
         if (!hasIncoming) {
-            roots.push_back(node);
+            roots.push_back(nodeIt.value());
         }
     }
     return roots;
 }
 
-std::vector<ScenarioNode> CScenarioGraphComp::GetTopologicalOrder() const {
+QList<ScenarioNode> CScenarioGraphComp::GetTopologicalOrder() const {
     // Kahn's algorithm
-    std::unordered_map<std::string, int> inDegree;
-    for (const auto& [id, node] : m_nodes) {
-        inDegree[id] = 0;
+    QHash<QString, int> inDegree;
+    for (auto it = m_nodes.cbegin(); it != m_nodes.cend(); ++it) {
+        inDegree[it.key()] = 0;
     }
-    for (const auto& [id, edge] : m_edges) {
+    for (const auto& edge : m_edges) {
         inDegree[edge.targetNodeId]++;
     }
 
-    std::vector<std::string> queue;
-    for (const auto& [id, degree] : inDegree) {
-        if (degree == 0) queue.push_back(id);
+    QList<QString> queue;
+    for (auto it = inDegree.cbegin(); it != inDegree.cend(); ++it) {
+        if (it.value() == 0) queue.push_back(it.key());
     }
 
-    std::vector<ScenarioNode> result;
-    while (!queue.empty()) {
-        std::string current = queue.back();
+    QList<ScenarioNode> result;
+    while (!queue.isEmpty()) {
+        QString current = queue.back();
         queue.pop_back();
-        result.push_back(m_nodes.at(current));
+        result.push_back(m_nodes.value(current));
 
-        for (const auto& [id, edge] : m_edges) {
+        for (const auto& edge : m_edges) {
             if (edge.sourceNodeId == current) {
                 inDegree[edge.targetNodeId]--;
                 if (inDegree[edge.targetNodeId] == 0) {
@@ -182,11 +187,11 @@ std::vector<ScenarioNode> CScenarioGraphComp::GetTopologicalOrder() const {
 }
 
 bool CScenarioGraphComp::IsValid() const {
-    if (m_nodes.empty()) return false;
+    if (m_nodes.isEmpty()) return false;
     if (HasCycles()) return false;
     // Check all edges reference existing nodes
-    for (const auto& [id, edge] : m_edges) {
-        if (!m_nodes.count(edge.sourceNodeId) || !m_nodes.count(edge.targetNodeId)) {
+    for (const auto& edge : m_edges) {
+        if (!m_nodes.contains(edge.sourceNodeId) || !m_nodes.contains(edge.targetNodeId)) {
             return false;
         }
     }
@@ -194,24 +199,24 @@ bool CScenarioGraphComp::IsValid() const {
 }
 
 bool CScenarioGraphComp::HasCycles() const {
-    std::unordered_map<std::string, int> visited;  // 0=unvisited, 1=in-stack, 2=done
-    for (const auto& [id, node] : m_nodes) {
-        visited[id] = 0;
+    QHash<QString, int> visited;  // 0=unvisited, 1=in-stack, 2=done
+    for (auto it = m_nodes.cbegin(); it != m_nodes.cend(); ++it) {
+        visited[it.key()] = 0;
     }
-    for (const auto& [id, node] : m_nodes) {
-        if (visited[id] == 0) {
-            if (DetectCyclesDFS(id, visited)) return true;
+    for (auto it = m_nodes.cbegin(); it != m_nodes.cend(); ++it) {
+        if (visited[it.key()] == 0) {
+            if (DetectCyclesDFS(it.key(), visited)) return true;
         }
     }
     return false;
 }
 
 bool CScenarioGraphComp::DetectCyclesDFS(
-    const std::string& nodeId,
-    std::unordered_map<std::string, int>& visited
+    const QString& nodeId,
+    QHash<QString, int>& visited
 ) const {
     visited[nodeId] = 1;
-    for (const auto& [id, edge] : m_edges) {
+    for (const auto& edge : m_edges) {
         if (edge.sourceNodeId == nodeId) {
             if (visited[edge.targetNodeId] == 1) return true;
             if (visited[edge.targetNodeId] == 0) {
@@ -223,40 +228,39 @@ bool CScenarioGraphComp::DetectCyclesDFS(
     return false;
 }
 
-std::string CScenarioGraphComp::ToJson() const {
+QString CScenarioGraphComp::ToJson() const {
     // Simplified JSON serialization
-    std::ostringstream ss;
-    ss << "{";
-    ss << "\"id\":\"" << m_id << "\",";
-    ss << "\"name\":\"" << m_name << "\",";
-    if (m_description) ss << "\"description\":\"" << *m_description << "\",";
-    ss << "\"nodes\":[";
+    QString json = QStringLiteral("{");
+    json += QStringLiteral("\"id\":\"") + m_id + QStringLiteral("\",");
+    json += QStringLiteral("\"name\":\"") + m_name + QStringLiteral("\",");
+    if (m_description) json += QStringLiteral("\"description\":\"") + *m_description + QStringLiteral("\",");
+    json += QStringLiteral("\"nodes\":[");
     bool first = true;
-    for (const auto& [id, node] : m_nodes) {
-        if (!first) ss << ",";
-        ss << "{\"id\":\"" << node.id << "\","
-           << "\"type\":" << static_cast<int>(node.type) << ","
-           << "\"label\":\"" << node.label << "\","
-           << "\"posX\":" << node.posX << ","
-           << "\"posY\":" << node.posY << "}";
+    for (const auto& node : m_nodes) {
+        if (!first) json += QLatin1Char(',');
+        json += QStringLiteral("{\"id\":\"") + node.id + QStringLiteral("\",")
+              + QStringLiteral("\"type\":") + QString::number(static_cast<int>(node.type)) + QStringLiteral(",")
+              + QStringLiteral("\"label\":\"") + node.label + QStringLiteral("\",")
+              + QStringLiteral("\"posX\":") + QString::number(node.posX) + QStringLiteral(",")
+              + QStringLiteral("\"posY\":") + QString::number(node.posY) + QStringLiteral("}");
         first = false;
     }
-    ss << "],\"edges\":[";
+    json += QStringLiteral("],\"edges\":[");
     first = true;
-    for (const auto& [id, edge] : m_edges) {
-        if (!first) ss << ",";
-        ss << "{\"id\":\"" << edge.id << "\","
-           << "\"sourceNodeId\":\"" << edge.sourceNodeId << "\","
-           << "\"targetNodeId\":\"" << edge.targetNodeId << "\"}";
+    for (const auto& edge : m_edges) {
+        if (!first) json += QLatin1Char(',');
+        json += QStringLiteral("{\"id\":\"") + edge.id + QStringLiteral("\",")
+              + QStringLiteral("\"sourceNodeId\":\"") + edge.sourceNodeId + QStringLiteral("\",")
+              + QStringLiteral("\"targetNodeId\":\"") + edge.targetNodeId + QStringLiteral("\"}");
         first = false;
     }
-    ss << "]}";
-    return ss.str();
+    json += QStringLiteral("]}");
+    return json;
 }
 
-bool CScenarioGraphComp::FromJson(const std::string& json) {
+bool CScenarioGraphComp::FromJson(const QString& json) {
     // TODO: Implement JSON deserialization
-    // Will use Qt JSON or nlohmann/json
+    // Will use Qt JSON (QJsonDocument)
     return false;
 }
 

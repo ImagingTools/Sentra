@@ -5,8 +5,10 @@
 #include <istd/IPolymorphic.h>
 #include <istd/TUniqueInterfacePtr.h>
 
+// Qt includes
+#include <QtCore/QString>
+
 // Standard includes
-#include <string>
 #include <memory>
 #include <optional>
 
@@ -17,12 +19,12 @@ namespace imtsentra
  * \brief Context provided to node actions for execution
  */
 struct ActionContext {
-    std::string currentUrl;
-    std::string domSnapshot;         // JSON DOM tree
-    std::string accessibilityTree;   // JSON accessibility tree
-    std::string screenshotPath;      // Path to current screenshot
-    std::string executionId;
-    std::string nodeId;
+    QString currentUrl;
+    QString domSnapshot;         // JSON DOM tree
+    QString accessibilityTree;   // JSON accessibility tree
+    QString screenshotPath;      // Path to current screenshot
+    QString executionId;
+    QString nodeId;
 };
 
 /**
@@ -30,9 +32,9 @@ struct ActionContext {
  */
 struct ActionResult {
     bool success;
-    std::optional<std::string> screenshotPath;
-    std::optional<std::string> errorMessage;
-    std::optional<std::string> resolvedSelector;
+    std::optional<QString> screenshotPath;
+    std::optional<QString> errorMessage;
+    std::optional<QString> resolvedSelector;
     int durationMs = 0;
 };
 
@@ -54,19 +56,19 @@ public:
      * \return Action result
      */
     virtual ActionResult Execute(
-        const std::string& config,
+        const QString& config,
         const ActionContext& context
     ) = 0;
 
     /**
      * \brief Validate that the config is well-formed for this action type
      */
-    virtual bool ValidateConfig(const std::string& config) const = 0;
+    virtual bool ValidateConfig(const QString& config) const = 0;
 
     /**
      * \brief Human-readable description of what this action does
      */
-    virtual std::string Describe(const std::string& config) const = 0;
+    virtual QString Describe(const QString& config) const = 0;
 };
 
 typedef istd::TUniqueInterfacePtr<INodeAction> INodeActionUniquePtr;

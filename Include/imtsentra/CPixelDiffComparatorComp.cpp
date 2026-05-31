@@ -5,7 +5,6 @@
 #include <iipr/CBitmapOperations.h>
 
 #include <cmath>
-#include <algorithm>
 
 namespace imtsentra
 {
@@ -113,7 +112,7 @@ ComparisonAlgorithm CPixelDiffComparatorComp::GetAlgorithm() const {
 
 bool CPixelDiffComparatorComp::IsInIgnoreRegion(
     int x, int y,
-    const std::vector<IgnoreRegion>& regions
+    const QList<IgnoreRegion>& regions
 ) const {
     for (const auto& r : regions) {
         if (x >= r.x && x < r.x + r.width &&

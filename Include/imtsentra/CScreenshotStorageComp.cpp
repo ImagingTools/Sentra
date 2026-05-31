@@ -5,12 +5,10 @@
 #include <iimg/IBitmap.h>
 
 // Qt includes
-#include <QtCore/QByteArray>
-
-// Standard includes
-#include <filesystem>
-
-namespace fs = std::filesystem;
+#include <QtCore/QDir>
+#include <QtCore/QDirIterator>
+#include <QtCore/QFile>
+#include <QtCore/QFileInfo>
 
 namespace imtsentra
 {
@@ -18,47 +16,47 @@ namespace imtsentra
 void CScreenshotStorageComp::OnComponentCreated() {
     BaseClass::OnComponentCreated();
 
-    m_basePath = (*m_basePathAttrPtr).toStdString();
-    fs::create_directories(m_basePath);
+    m_basePath = *m_basePathAttrPtr;
+    QDir().mkpath(m_basePath);
 }
 
-std::string CScreenshotStorageComp::StoreExecutionScreenshot(
-    const std::string& executionId,
-    const std::string& nodeId,
+QString CScreenshotStorageComp::StoreExecutionScreenshot(
+    const QString& executionId,
+    const QString& nodeId,
     const iimg::IBitmap& bitmap
 ) {
-    auto dir = EnsureDirectory(m_basePath + "/executions/" + executionId + "/" + nodeId);
-    auto path = dir + "/actual.png";
+    auto dir = EnsureDirectory(m_basePath + QStringLiteral("/executions/") + executionId + QLatin1Char('/') + nodeId);
+    auto path = dir + QStringLiteral("/actual.png");
     SaveBitmap(bitmap, path);
     return path;
 }
 
-std::string CScreenshotStorageComp::StoreBaselineScreenshot(
-    const std::string& scenarioId,
-    const std::string& nodeId,
+QString CScreenshotStorageComp::StoreBaselineScreenshot(
+    const QString& scenarioId,
+    const QString& nodeId,
     const iimg::IBitmap& bitmap
 ) {
-    auto dir = EnsureDirectory(m_basePath + "/baselines/" + scenarioId + "/" + nodeId);
-    auto path = dir + "/baseline.png";
+    auto dir = EnsureDirectory(m_basePath + QStringLiteral("/baselines/") + scenarioId + QLatin1Char('/') + nodeId);
+    auto path = dir + QStringLiteral("/baseline.png");
     SaveBitmap(bitmap, path);
     return path;
 }
 
-std::string CScreenshotStorageComp::StoreDiffImage(
-    const std::string& executionId,
-    const std::string& nodeId,
+QString CScreenshotStorageComp::StoreDiffImage(
+    const QString& executionId,
+    const QString& nodeId,
     const iimg::IBitmap& bitmap
 ) {
-    auto dir = EnsureDirectory(m_basePath + "/diffs/" + executionId + "/" + nodeId);
-    auto path = dir + "/diff.png";
+    auto dir = EnsureDirectory(m_basePath + QStringLiteral("/diffs/") + executionId + QLatin1Char('/') + nodeId);
+    auto path = dir + QStringLiteral("/diff.png");
     SaveBitmap(bitmap, path);
     return path;
 }
 
 std::shared_ptr<iimg::IBitmap> CScreenshotStorageComp::LoadScreenshot(
-    const std::string& path
+    const QString& path
 ) const {
-    if (!fs::exists(path)) {
+    if (!QFile::exists(path)) {
         return nullptr;
     }
 
@@ -66,50 +64,50 @@ std::shared_ptr<iimg::IBitmap> CScreenshotStorageComp::LoadScreenshot(
     return nullptr;
 }
 
-std::optional<std::string> CScreenshotStorageComp::GetExecutionScreenshotPath(
-    const std::string& executionId,
-    const std::string& nodeId
+std::optional<QString> CScreenshotStorageComp::GetExecutionScreenshotPath(
+    const QString& executionId,
+    const QString& nodeId
 ) const {
-    auto path = m_basePath + "/executions/" + executionId + "/" + nodeId + "/actual.png";
-    if (fs::exists(path)) return path;
+    auto path = m_basePath + QStringLiteral("/executions/") + executionId + QLatin1Char('/') + nodeId + QStringLiteral("/actual.png");
+    if (QFile::exists(path)) return path;
     return std::nullopt;
 }
 
-std::optional<std::string> CScreenshotStorageComp::GetBaselineScreenshotPath(
-    const std::string& scenarioId,
-    const std::string& nodeId
+std::optional<QString> CScreenshotStorageComp::GetBaselineScreenshotPath(
+    const QString& scenarioId,
+    const QString& nodeId
 ) const {
-    auto path = m_basePath + "/baselines/" + scenarioId + "/" + nodeId + "/baseline.png";
-    if (fs::exists(path)) return path;
+    auto path = m_basePath + QStringLiteral("/baselines/") + scenarioId + QLatin1Char('/') + nodeId + QStringLiteral("/baseline.png");
+    if (QFile::exists(path)) return path;
     return std::nullopt;
 }
 
-void CScreenshotStorageComp::DeleteExecutionArtifacts(const std::string& executionId) {
-    auto execPath = m_basePath + "/executions/" + executionId;
-    auto diffPath = m_basePath + "/diffs/" + executionId;
+void CScreenshotStorageComp::DeleteExecutionArtifacts(const QString& executionId) {
+    auto execPath = m_basePath + QStringLiteral("/executions/") + executionId;
+    auto diffPath = m_basePath + QStringLiteral("/diffs/") + executionId;
 
-    if (fs::exists(execPath)) fs::remove_all(execPath);
-    if (fs::exists(diffPath)) fs::remove_all(diffPath);
+    if (QFileInfo::exists(execPath)) QDir(execPath).removeRecursively();
+    if (QFileInfo::exists(diffPath)) QDir(diffPath).removeRecursively();
 }
 
-size_t CScreenshotStorageComp::GetTotalStorageSize() const {
-    size_t total = 0;
-    for (const auto& entry : fs::recursive_directory_iterator(m_basePath)) {
-        if (entry.is_regular_file()) {
-            total += entry.file_size();
-        }
+qint64 CScreenshotStorageComp::GetTotalStorageSize() const {
+    qint64 total = 0;
+    QDirIterator it(m_basePath, QDir::Files, QDirIterator::Subdirectories);
+    while (it.hasNext()) {
+        it.next();
+        total += it.fileInfo().size();
     }
     return total;
 }
 
-std::string CScreenshotStorageComp::EnsureDirectory(const std::string& path) const {
-    fs::create_directories(path);
+QString CScreenshotStorageComp::EnsureDirectory(const QString& path) const {
+    QDir().mkpath(path);
     return path;
 }
 
 bool CScreenshotStorageComp::SaveBitmap(
     const iimg::IBitmap& bitmap,
-    const std::string& path
+    const QString& path
 ) const {
     // TODO: Use iimg codec to save bitmap to file
     (void)bitmap;

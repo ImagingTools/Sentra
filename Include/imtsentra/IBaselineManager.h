@@ -6,9 +6,11 @@
 #include <istd/IPolymorphic.h>
 #include <istd/TUniqueInterfacePtr.h>
 
+// Qt includes
+#include <QtCore/QString>
+#include <QtCore/QList>
+
 // Standard includes
-#include <string>
-#include <vector>
 #include <optional>
 
 namespace imtsentra
@@ -52,14 +54,14 @@ I_DECLARE_ENUM(BaselineDecision,
  * \brief Baseline entry metadata
  */
 struct BaselineEntry {
-    std::string id;
-    std::string scenarioId;
-    std::string nodeId;
-    std::string screenshotPath;
-    std::optional<std::string> semanticSnapshotPath;
-    std::optional<std::string> layoutMetadataPath;
-    std::string createdAt;
-    std::string updatedAt;
+    QString id;
+    QString scenarioId;
+    QString nodeId;
+    QString screenshotPath;
+    std::optional<QString> semanticSnapshotPath;
+    std::optional<QString> layoutMetadataPath;
+    QString createdAt;
+    QString updatedAt;
     int version = 1;
 };
 
@@ -78,8 +80,8 @@ public:
      * \brief Get baseline for a specific scenario node
      */
     virtual std::optional<BaselineEntry> GetBaseline(
-        const std::string& scenarioId,
-        const std::string& nodeId
+        const QString& scenarioId,
+        const QString& nodeId
     ) const = 0;
 
     /**
@@ -90,31 +92,31 @@ public:
      * \return Created/updated baseline entry
      */
     virtual BaselineEntry SetBaseline(
-        const std::string& scenarioId,
-        const std::string& nodeId,
-        const std::string& screenshotPath
+        const QString& scenarioId,
+        const QString& nodeId,
+        const QString& screenshotPath
     ) = 0;
 
     /**
      * \brief Apply decision to a baseline diff
      */
     virtual void ApplyDecision(
-        const std::string& baselineId,
+        const QString& baselineId,
         BaselineDecision decision,
-        const std::string& decidedBy
+        const QString& decidedBy
     ) = 0;
 
     /**
      * \brief Get all baselines for a scenario
      */
-    virtual std::vector<BaselineEntry> GetBaselines(const std::string& scenarioId) const = 0;
+    virtual QList<BaselineEntry> GetBaselines(const QString& scenarioId) const = 0;
 
     /**
      * \brief Get baseline history (all versions)
      */
-    virtual std::vector<BaselineEntry> GetHistory(
-        const std::string& scenarioId,
-        const std::string& nodeId
+    virtual QList<BaselineEntry> GetHistory(
+        const QString& scenarioId,
+        const QString& nodeId
     ) const = 0;
 
     /**

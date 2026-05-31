@@ -6,9 +6,11 @@
 #include <istd/IPolymorphic.h>
 #include <istd/TUniqueInterfacePtr.h>
 
+// Qt includes
+#include <QtCore/QString>
+#include <QtCore/QList>
+
 // Standard includes
-#include <string>
-#include <vector>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -42,13 +44,13 @@ I_DECLARE_ENUM(ExecutionStatus,
  * \brief Result of executing a single scenario node
  */
 struct NodeExecutionResult {
-    std::string nodeId;
+    QString nodeId;
     ExecutionStatus status;
-    std::string startedAt;
-    std::string completedAt;
-    std::optional<std::string> screenshotPath;
-    std::optional<std::string> domSnapshotPath;
-    std::optional<std::string> errorMessage;
+    QString startedAt;
+    QString completedAt;
+    std::optional<QString> screenshotPath;
+    std::optional<QString> domSnapshotPath;
+    std::optional<QString> errorMessage;
     int durationMs = 0;
 };
 
@@ -56,21 +58,21 @@ struct NodeExecutionResult {
  * \brief Execution configuration
  */
 struct ExecutionConfig {
-    std::string environment;
-    std::string baseUrl;
+    QString environment;
+    QString baseUrl;
     bool headless = true;
     int timeoutMs = 30000;
     int viewportWidth = 1920;
     int viewportHeight = 1080;
-    std::optional<std::string> credentials;
+    std::optional<QString> credentials;
 };
 
 /**
  * \brief Progress callback for execution monitoring
  */
 using ExecutionProgressCallback = std::function<void(
-    const std::string& executionId,
-    const std::string& nodeId,
+    const QString& executionId,
+    const QString& nodeId,
     ExecutionStatus status,
     float overallProgress
 )>;
@@ -94,7 +96,7 @@ public:
      * \param config Execution configuration
      * \return Execution ID for tracking
      */
-    virtual std::string Execute(
+    virtual QString Execute(
         std::shared_ptr<IScenarioGraph> graph,
         const ExecutionConfig& config
     ) = 0;
@@ -103,7 +105,7 @@ public:
      * \brief Stop a running execution
      * \param executionId ID of the execution to stop
      */
-    virtual void Stop(const std::string& executionId) = 0;
+    virtual void Stop(const QString& executionId) = 0;
 
     /**
      * \brief Retry execution from a specific node
@@ -111,20 +113,20 @@ public:
      * \param fromNodeId Node to restart from
      * \return New execution ID
      */
-    virtual std::string Retry(
-        const std::string& executionId,
-        const std::string& fromNodeId
+    virtual QString Retry(
+        const QString& executionId,
+        const QString& fromNodeId
     ) = 0;
 
     /**
      * \brief Get current execution status
      */
-    virtual ExecutionStatus GetStatus(const std::string& executionId) const = 0;
+    virtual ExecutionStatus GetStatus(const QString& executionId) const = 0;
 
     /**
      * \brief Get results for all completed nodes
      */
-    virtual std::vector<NodeExecutionResult> GetResults(const std::string& executionId) const = 0;
+    virtual QList<NodeExecutionResult> GetResults(const QString& executionId) const = 0;
 
     /**
      * \brief Register progress callback

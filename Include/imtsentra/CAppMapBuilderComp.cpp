@@ -1,31 +1,28 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #include <imtsentra/CAppMapBuilderComp.h>
-#include <chrono>
-#include <sstream>
-#include <algorithm>
+
+// Qt includes
+#include <QtCore/QDateTime>
+#include <QtCore/QMutexLocker>
 
 namespace imtsentra
 {
 
 void CAppMapBuilderComp::RecordScreen(
-    const std::string& url,
-    const std::string& title,
-    const std::optional<std::string>& screenshotPath
+    const QString& url,
+    const QString& title,
+    const std::optional<QString>& screenshotPath
 ) {
-    std::lock_guard<std::mutex> lock(m_mutex);
+    QMutexLocker lock(&m_mutex);
     auto normalizedUrl = NormalizeUrl(url);
-    auto now = std::to_string(
-        std::chrono::duration_cast<std::chrono::milliseconds>(
-            std::chrono::system_clock::now().time_since_epoch()
-        ).count()
-    );
+    auto now = QString::number(QDateTime::currentMSecsSinceEpoch());
 
     auto it = m_screens.find(normalizedUrl);
     if (it != m_screens.end()) {
-        it->second.lastSeenAt = now;
-        it->second.visitCount++;
+        it.value().lastSeenAt = now;
+        it.value().visitCount++;
         if (screenshotPath) {
-            it->second.screenshotPath = *screenshotPath;
+            it.value().screenshotPath = *screenshotPath;
         }
     } else {
         AppScreen screen;
@@ -41,11 +38,11 @@ void CAppMapBuilderComp::RecordScreen(
 }
 
 void CAppMapBuilderComp::RecordTransition(
-    const std::string& fromUrl,
-    const std::string& toUrl,
-    const std::string& action
+    const QString& fromUrl,
+    const QString& toUrl,
+    const QString& action
 ) {
-    std::lock_guard<std::mutex> lock(m_mutex);
+    QMutexLocker lock(&m_mutex);
     auto normFrom = NormalizeUrl(fromUrl);
     auto normTo = NormalizeUrl(toUrl);
 
@@ -56,11 +53,7 @@ void CAppMapBuilderComp::RecordTransition(
         }
     }
 
-    auto now = std::to_string(
-        std::chrono::duration_cast<std::chrono::milliseconds>(
-            std::chrono::system_clock::now().time_since_epoch()
-        ).count()
-    );
+    auto now = QString::number(QDateTime::currentMSecsSinceEpoch());
 
     AppTransition transition;
     transition.id = GenerateId();
@@ -71,25 +64,25 @@ void CAppMapBuilderComp::RecordTransition(
     m_transitions.push_back(std::move(transition));
 }
 
-std::vector<AppScreen> CAppMapBuilderComp::GetScreens() const {
-    std::lock_guard<std::mutex> lock(m_mutex);
-    std::vector<AppScreen> screens;
+QList<AppScreen> CAppMapBuilderComp::GetScreens() const {
+    QMutexLocker lock(&m_mutex);
+    QList<AppScreen> screens;
     screens.reserve(m_screens.size());
-    for (const auto& [url, screen] : m_screens) {
+    for (const auto& screen : m_screens) {
         screens.push_back(screen);
     }
     return screens;
 }
 
-std::vector<AppTransition> CAppMapBuilderComp::GetTransitions() const {
-    std::lock_guard<std::mutex> lock(m_mutex);
+QList<AppTransition> CAppMapBuilderComp::GetTransitions() const {
+    QMutexLocker lock(&m_mutex);
     return m_transitions;
 }
 
-std::vector<AppScreen> CAppMapBuilderComp::GetUntestedScreens() const {
-    std::lock_guard<std::mutex> lock(m_mutex);
-    std::vector<AppScreen> untested;
-    for (const auto& [url, screen] : m_screens) {
+QList<AppScreen> CAppMapBuilderComp::GetUntestedScreens() const {
+    QMutexLocker lock(&m_mutex);
+    QList<AppScreen> untested;
+    for (const auto& screen : m_screens) {
         if (screen.visitCount <= 1) {  // Only discovered, not tested
             untested.push_back(screen);
         }
@@ -98,54 +91,53 @@ std::vector<AppScreen> CAppMapBuilderComp::GetUntestedScreens() const {
 }
 
 float CAppMapBuilderComp::GetCoveragePercentage() const {
-    std::lock_guard<std::mutex> lock(m_mutex);
-    if (m_screens.empty()) return 0.0f;
+    QMutexLocker lock(&m_mutex);
+    if (m_screens.isEmpty()) return 0.0f;
 
     int tested = 0;
-    for (const auto& [url, screen] : m_screens) {
+    for (const auto& screen : m_screens) {
         if (screen.visitCount > 1) tested++;
     }
     return static_cast<float>(tested) / static_cast<float>(m_screens.size()) * 100.0f;
 }
 
-std::string CAppMapBuilderComp::ToJson() const {
-    std::lock_guard<std::mutex> lock(m_mutex);
-    std::ostringstream ss;
-    ss << "{\"screens\":[";
+QString CAppMapBuilderComp::ToJson() const {
+    QMutexLocker lock(&m_mutex);
+    QString json = QStringLiteral("{\"screens\":[");
     bool first = true;
-    for (const auto& [url, screen] : m_screens) {
-        if (!first) ss << ",";
-        ss << "{\"id\":\"" << screen.id << "\","
-           << "\"url\":\"" << screen.url << "\","
-           << "\"title\":\"" << screen.title << "\","
-           << "\"visitCount\":" << screen.visitCount << "}";
+    for (const auto& screen : m_screens) {
+        if (!first) json += QLatin1Char(',');
+        json += QStringLiteral("{\"id\":\"") + screen.id + QStringLiteral("\",")
+              + QStringLiteral("\"url\":\"") + screen.url + QStringLiteral("\",")
+              + QStringLiteral("\"title\":\"") + screen.title + QStringLiteral("\",")
+              + QStringLiteral("\"visitCount\":") + QString::number(screen.visitCount)
+              + QStringLiteral("}");
         first = false;
     }
-    ss << "],\"transitions\":[";
+    json += QStringLiteral("],\"transitions\":[");
     first = true;
     for (const auto& t : m_transitions) {
-        if (!first) ss << ",";
-        ss << "{\"id\":\"" << t.id << "\","
-           << "\"from\":\"" << t.sourceScreenId << "\","
-           << "\"to\":\"" << t.targetScreenId << "\","
-           << "\"action\":\"" << t.action << "\"}";
+        if (!first) json += QLatin1Char(',');
+        json += QStringLiteral("{\"id\":\"") + t.id + QStringLiteral("\",")
+              + QStringLiteral("\"from\":\"") + t.sourceScreenId + QStringLiteral("\",")
+              + QStringLiteral("\"to\":\"") + t.targetScreenId + QStringLiteral("\",")
+              + QStringLiteral("\"action\":\"") + t.action + QStringLiteral("\"}");
         first = false;
     }
-    ss << "]}";
-    return ss.str();
+    json += QStringLiteral("]}");
+    return json;
 }
 
-std::string CAppMapBuilderComp::GenerateId() const {
-    auto now = std::chrono::system_clock::now();
-    auto ms = std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch()).count();
-    return "map-" + std::to_string(ms);
+QString CAppMapBuilderComp::GenerateId() const {
+    auto us = QDateTime::currentDateTime().toMSecsSinceEpoch();
+    return QStringLiteral("map-") + QString::number(us);
 }
 
-std::string CAppMapBuilderComp::NormalizeUrl(const std::string& url) const {
+QString CAppMapBuilderComp::NormalizeUrl(const QString& url) const {
     // Remove trailing slash and query params for grouping
     auto result = url;
-    if (!result.empty() && result.back() == '/') {
-        result.pop_back();
+    if (!result.isEmpty() && result.endsWith(QLatin1Char('/'))) {
+        result.chop(1);
     }
     return result;
 }

@@ -1,7 +1,11 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #include <imtsentra/CExecutionEngineComp.h>
 #include <imtsentra/IScenarioExecutor.h>
-#include <chrono>
+
+// Qt includes
+#include <QtCore/QDateTime>
+#include <QtCore/QMutexLocker>
+#include <QtCore/QThread>
 
 namespace imtsentra
 {
@@ -12,26 +16,26 @@ void CExecutionEngineComp::OnComponentDestroyed() {
     BaseClass::OnComponentDestroyed();
 }
 
-std::string CExecutionEngineComp::QueueExecution(
+QString CExecutionEngineComp::QueueExecution(
     std::shared_ptr<IScenarioGraph> graph,
     const ExecutionConfig& config
 ) {
-    std::lock_guard<std::mutex> lock(m_mutex);
+    QMutexLocker lock(&m_mutex);
     QueuedExecution qe;
     qe.id = GenerateId();
     qe.graph = graph;
     qe.config = config;
-    std::string id = qe.id;
-    m_queue.push(std::move(qe));
-    m_cv.notify_one();
+    QString id = qe.id;
+    m_queue.enqueue(std::move(qe));
+    m_cv.wakeOne();
     return id;
 }
 
-std::vector<std::string> CExecutionEngineComp::QueueParallelExecution(
-    const std::vector<std::shared_ptr<IScenarioGraph>>& graphs,
+QList<QString> CExecutionEngineComp::QueueParallelExecution(
+    const QList<std::shared_ptr<IScenarioGraph>>& graphs,
     const ExecutionConfig& config
 ) {
-    std::vector<std::string> ids;
+    QList<QString> ids;
     ids.reserve(graphs.size());
     for (const auto& graph : graphs) {
         ids.push_back(QueueExecution(graph, config));
@@ -39,66 +43,66 @@ std::vector<std::string> CExecutionEngineComp::QueueParallelExecution(
     return ids;
 }
 
-void CExecutionEngineComp::CancelExecution(const std::string& executionId) {
+void CExecutionEngineComp::CancelExecution(const QString& executionId) {
     // TODO: Signal cancellation to running execution
 }
 
 int CExecutionEngineComp::GetActiveExecutionCount() const {
-    return m_activeCount.load();
+    return m_activeCount.loadRelaxed();
 }
 
 EngineConfig CExecutionEngineComp::GetConfig() const {
-    std::lock_guard<std::mutex> lock(m_mutex);
+    QMutexLocker lock(&m_mutex);
     return m_config;
 }
 
 void CExecutionEngineComp::SetConfig(const EngineConfig& config) {
-    std::lock_guard<std::mutex> lock(m_mutex);
+    QMutexLocker lock(&m_mutex);
     m_config = config;
 }
 
 void CExecutionEngineComp::Start() {
-    m_running = true;
+    m_running.storeRelaxed(1);
     for (int i = 0; i < m_config.maxParallelExecutions; ++i) {
-        m_workers.emplace_back(&CExecutionEngineComp::WorkerLoop, this);
+        QThread* worker = QThread::create([this] { WorkerLoop(); });
+        m_workers.push_back(worker);
+        worker->start();
     }
 }
 
 void CExecutionEngineComp::Stop() {
-    m_running = false;
-    m_cv.notify_all();
-    for (auto& worker : m_workers) {
-        if (worker.joinable()) {
-            worker.join();
+    m_running.storeRelaxed(0);
+    m_cv.wakeAll();
+    for (QThread* worker : m_workers) {
+        if (worker != nullptr) {
+            worker->wait();
+            delete worker;
         }
     }
     m_workers.clear();
 }
 
 void CExecutionEngineComp::WorkerLoop() {
-    while (m_running) {
+    while (m_running.loadRelaxed() != 0) {
         QueuedExecution qe;
         {
-            std::unique_lock<std::mutex> lock(m_mutex);
-            m_cv.wait(lock, [this] {
-                return !m_queue.empty() || !m_running;
-            });
-            if (!m_running) return;
-            if (m_queue.empty()) continue;
-            qe = std::move(m_queue.front());
-            m_queue.pop();
+            QMutexLocker lock(&m_mutex);
+            while (m_queue.isEmpty() && m_running.loadRelaxed() != 0) {
+                m_cv.wait(&m_mutex);
+            }
+            if (m_running.loadRelaxed() == 0) return;
+            if (m_queue.isEmpty()) continue;
+            qe = m_queue.dequeue();
         }
 
-        m_activeCount++;
+        m_activeCount.ref();
         // TODO: Execute the scenario using CScenarioExecutorComp
-        m_activeCount--;
+        m_activeCount.deref();
     }
 }
 
-std::string CExecutionEngineComp::GenerateId() const {
-    auto now = std::chrono::system_clock::now();
-    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
-    return "exec-" + std::to_string(ms);
+QString CExecutionEngineComp::GenerateId() const {
+    return QStringLiteral("exec-") + QString::number(QDateTime::currentMSecsSinceEpoch());
 }
 
 } // namespace imtsentra

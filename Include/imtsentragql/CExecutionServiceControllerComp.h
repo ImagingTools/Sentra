@@ -5,9 +5,10 @@
 #include <icomp/CComponentBase.h>
 #include <istd/IPolymorphic.h>
 
+// Qt includes
+#include <QtCore/QString>
+
 // Standard includes
-#include <string>
-#include <vector>
 #include <functional>
 
 namespace imtsentragql
@@ -38,19 +39,19 @@ public:
     I_END_COMPONENT
 
     // Query resolvers
-    std::string GetExecution(const std::string& executionId) const;
-    std::string GetNodeResult(const std::string& executionId, const std::string& nodeId) const;
-    std::string ListExecutions(const std::string& scenarioId) const;
+    QString GetExecution(const QString& executionId) const;
+    QString GetNodeResult(const QString& executionId, const QString& nodeId) const;
+    QString ListExecutions(const QString& scenarioId) const;
 
     // Mutation resolvers
-    std::string ExecuteScenario(const std::string& scenarioId, const std::string& configJson);
-    bool StopExecution(const std::string& executionId);
-    std::string RetryExecution(const std::string& executionId, const std::string& fromNodeId);
+    QString ExecuteScenario(const QString& scenarioId, const QString& configJson);
+    bool StopExecution(const QString& executionId);
+    QString RetryExecution(const QString& executionId, const QString& fromNodeId);
 
     // Subscription handlers
-    using ProgressHandler = std::function<void(const std::string& progressJson)>;
-    void SubscribeExecutionProgress(const std::string& executionId, ProgressHandler handler);
-    void SubscribeNodeCompleted(const std::string& executionId, ProgressHandler handler);
+    using ProgressHandler = std::function<void(const QString& progressJson)>;
+    void SubscribeExecutionProgress(const QString& executionId, ProgressHandler handler);
+    void SubscribeNodeCompleted(const QString& executionId, ProgressHandler handler);
 };
 
 } // namespace imtsentragql

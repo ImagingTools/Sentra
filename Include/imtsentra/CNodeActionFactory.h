@@ -3,8 +3,10 @@
 
 #include <imtsentra/INodeAction.h>
 #include <imtsentra/IScenarioGraph.h>
+
+#include <QtCore/QHash>
+
 #include <memory>
-#include <unordered_map>
 #include <functional>
 
 namespace imtsentra
@@ -36,7 +38,7 @@ public:
     bool HasAction(NodeType type) const;
 
 private:
-    std::unordered_map<int, ActionCreator> m_creators;
+    QHash<int, ActionCreator> m_creators;
 
     void RegisterDefaultActions();
 };

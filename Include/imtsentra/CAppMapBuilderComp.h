@@ -7,9 +7,11 @@
 // ImtSentra includes
 #include <imtsentra/IAppMapBuilder.h>
 
-// Standard includes
-#include <mutex>
-#include <unordered_map>
+// Qt includes
+#include <QtCore/QHash>
+#include <QtCore/QList>
+#include <QtCore/QMutex>
+#include <QtCore/QString>
 
 namespace imtsentra
 {
@@ -35,30 +37,30 @@ public:
 
     // reimplemented (imtsentra::IAppMapBuilder)
     void RecordScreen(
-        const std::string& url,
-        const std::string& title,
-        const std::optional<std::string>& screenshotPath = std::nullopt
+        const QString& url,
+        const QString& title,
+        const std::optional<QString>& screenshotPath = std::nullopt
     ) override;
 
     void RecordTransition(
-        const std::string& fromUrl,
-        const std::string& toUrl,
-        const std::string& action
+        const QString& fromUrl,
+        const QString& toUrl,
+        const QString& action
     ) override;
 
-    std::vector<AppScreen> GetScreens() const override;
-    std::vector<AppTransition> GetTransitions() const override;
-    std::vector<AppScreen> GetUntestedScreens() const override;
+    QList<AppScreen> GetScreens() const override;
+    QList<AppTransition> GetTransitions() const override;
+    QList<AppScreen> GetUntestedScreens() const override;
     float GetCoveragePercentage() const override;
-    std::string ToJson() const override;
+    QString ToJson() const override;
 
 private:
-    mutable std::mutex m_mutex;
-    std::unordered_map<std::string, AppScreen> m_screens;  // keyed by URL
-    std::vector<AppTransition> m_transitions;
+    mutable QMutex m_mutex;
+    QHash<QString, AppScreen> m_screens;  // keyed by URL
+    QList<AppTransition> m_transitions;
 
-    std::string GenerateId() const;
-    std::string NormalizeUrl(const std::string& url) const;
+    QString GenerateId() const;
+    QString NormalizeUrl(const QString& url) const;
 };
 
 } // namespace imtsentra

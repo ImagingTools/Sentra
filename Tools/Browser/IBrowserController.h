@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #pragma once
 
-#include <string>
-#include <vector>
+// Qt includes
+#include <QtCore/QString>
+
+// Standard includes
 #include <optional>
-#include <functional>
 
 namespace imtsentra
 {
@@ -32,7 +33,7 @@ enum BrowserCommand
  */
 struct BrowserRequest {
     BrowserCommand command;
-    std::string payload;  // JSON parameters
+    QString payload;  // JSON parameters
     int timeoutMs = 30000;
 };
 
@@ -41,8 +42,8 @@ struct BrowserRequest {
  */
 struct BrowserResponse {
     bool success;
-    std::string data;      // JSON response data
-    std::optional<std::string> error;
+    QString data;      // JSON response data
+    std::optional<QString> error;
     int durationMs = 0;
 };
 
@@ -61,7 +62,7 @@ public:
      * \param endpoint WebSocket endpoint URL
      * \return true if connection successful
      */
-    virtual bool Connect(const std::string& endpoint) = 0;
+    virtual bool Connect(const QString& endpoint) = 0;
 
     /**
      * \brief Disconnect from the browser controller
@@ -79,13 +80,13 @@ public:
     virtual BrowserResponse SendCommand(const BrowserRequest& request) = 0;
 
     // Convenience methods
-    virtual BrowserResponse Navigate(const std::string& url) = 0;
-    virtual BrowserResponse Click(const std::string& selector) = 0;
-    virtual BrowserResponse Type(const std::string& selector, const std::string& text) = 0;
+    virtual BrowserResponse Navigate(const QString& url) = 0;
+    virtual BrowserResponse Click(const QString& selector) = 0;
+    virtual BrowserResponse Type(const QString& selector, const QString& text) = 0;
     virtual BrowserResponse Screenshot(bool fullPage = false) = 0;
     virtual BrowserResponse GetDom() = 0;
     virtual BrowserResponse GetAccessibilityTree() = 0;
-    virtual BrowserResponse WaitFor(const std::string& condition, int timeoutMs = 5000) = 0;
+    virtual BrowserResponse WaitFor(const QString& condition, int timeoutMs = 5000) = 0;
 
     /**
      * \brief Launch browser with given configuration

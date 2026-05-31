@@ -7,9 +7,11 @@
 // ImtSentra includes
 #include <imtsentra/IScenarioExecutor.h>
 
-// Standard includes
-#include <mutex>
-#include <unordered_map>
+// Qt includes
+#include <QtCore/QHash>
+#include <QtCore/QList>
+#include <QtCore/QMutex>
+#include <QtCore/QString>
 
 namespace imtsentra
 {
@@ -34,38 +36,38 @@ public:
     I_END_COMPONENT
 
     // reimplemented (imtsentra::IScenarioExecutor)
-    std::string Execute(
+    QString Execute(
         std::shared_ptr<IScenarioGraph> graph,
         const ExecutionConfig& config
     ) override;
 
-    void Stop(const std::string& executionId) override;
+    void Stop(const QString& executionId) override;
 
-    std::string Retry(
-        const std::string& executionId,
-        const std::string& fromNodeId
+    QString Retry(
+        const QString& executionId,
+        const QString& fromNodeId
     ) override;
 
-    ExecutionStatus GetStatus(const std::string& executionId) const override;
-    std::vector<NodeExecutionResult> GetResults(const std::string& executionId) const override;
+    ExecutionStatus GetStatus(const QString& executionId) const override;
+    QList<NodeExecutionResult> GetResults(const QString& executionId) const override;
     void OnProgress(ExecutionProgressCallback callback) override;
 
 private:
     struct ExecutionState {
-        std::string id;
+        QString id;
         ExecutionStatus status;
         std::shared_ptr<IScenarioGraph> graph;
         ExecutionConfig config;
-        std::vector<NodeExecutionResult> results;
+        QList<NodeExecutionResult> results;
         bool stopRequested = false;
     };
 
-    mutable std::mutex m_mutex;
-    std::unordered_map<std::string, ExecutionState> m_executions;
-    std::vector<ExecutionProgressCallback> m_callbacks;
+    mutable QMutex m_mutex;
+    QHash<QString, ExecutionState> m_executions;
+    QList<ExecutionProgressCallback> m_callbacks;
 
-    std::string GenerateId() const;
-    void NotifyProgress(const std::string& executionId, const std::string& nodeId,
+    QString GenerateId() const;
+    void NotifyProgress(const QString& executionId, const QString& nodeId,
                        ExecutionStatus status, float progress);
 };
 

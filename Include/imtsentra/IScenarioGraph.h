@@ -6,9 +6,11 @@
 #include <istd/IPolymorphic.h>
 #include <istd/TUniqueInterfacePtr.h>
 
+// Qt includes
+#include <QtCore/QString>
+#include <QtCore/QList>
+
 // Standard includes
-#include <string>
-#include <vector>
 #include <memory>
 #include <optional>
 
@@ -51,11 +53,11 @@ I_DECLARE_ENUM(NodeType,
  * \brief Represents a single node in a scenario graph
  */
 struct ScenarioNode {
-    std::string id;
+    QString id;
     NodeType type;
-    std::string label;
-    std::optional<std::string> description;
-    std::optional<std::string> config;  // JSON config
+    QString label;
+    std::optional<QString> description;
+    std::optional<QString> config;  // JSON config
     float posX = 0.0f;
     float posY = 0.0f;
 };
@@ -64,11 +66,11 @@ struct ScenarioNode {
  * \brief Represents a directed edge between two scenario nodes
  */
 struct ScenarioEdge {
-    std::string id;
-    std::string sourceNodeId;
-    std::string targetNodeId;
-    std::optional<std::string> condition;
-    std::optional<std::string> label;
+    QString id;
+    QString sourceNodeId;
+    QString targetNodeId;
+    std::optional<QString> condition;
+    std::optional<QString> label;
 };
 
 /**
@@ -83,39 +85,39 @@ class IScenarioGraph: virtual public istd::IPolymorphic
 {
 public:
     // Graph identification
-    virtual std::string GetId() const = 0;
-    virtual std::string GetName() const = 0;
-    virtual void SetName(const std::string& name) = 0;
-    virtual std::optional<std::string> GetDescription() const = 0;
-    virtual void SetDescription(const std::string& description) = 0;
+    virtual QString GetId() const = 0;
+    virtual QString GetName() const = 0;
+    virtual void SetName(const QString& name) = 0;
+    virtual std::optional<QString> GetDescription() const = 0;
+    virtual void SetDescription(const QString& description) = 0;
 
     // Node operations
     virtual void AddNode(const ScenarioNode& node) = 0;
-    virtual void RemoveNode(const std::string& nodeId) = 0;
+    virtual void RemoveNode(const QString& nodeId) = 0;
     virtual void UpdateNode(const ScenarioNode& node) = 0;
-    virtual std::optional<ScenarioNode> GetNode(const std::string& nodeId) const = 0;
-    virtual std::vector<ScenarioNode> GetNodes() const = 0;
+    virtual std::optional<ScenarioNode> GetNode(const QString& nodeId) const = 0;
+    virtual QList<ScenarioNode> GetNodes() const = 0;
 
     // Edge operations
     virtual void AddEdge(const ScenarioEdge& edge) = 0;
-    virtual void RemoveEdge(const std::string& edgeId) = 0;
+    virtual void RemoveEdge(const QString& edgeId) = 0;
     virtual void UpdateEdge(const ScenarioEdge& edge) = 0;
-    virtual std::optional<ScenarioEdge> GetEdge(const std::string& edgeId) const = 0;
-    virtual std::vector<ScenarioEdge> GetEdges() const = 0;
+    virtual std::optional<ScenarioEdge> GetEdge(const QString& edgeId) const = 0;
+    virtual QList<ScenarioEdge> GetEdges() const = 0;
 
     // Graph traversal
-    virtual std::vector<ScenarioNode> GetSuccessors(const std::string& nodeId) const = 0;
-    virtual std::vector<ScenarioNode> GetPredecessors(const std::string& nodeId) const = 0;
-    virtual std::vector<ScenarioNode> GetRootNodes() const = 0;
-    virtual std::vector<ScenarioNode> GetTopologicalOrder() const = 0;
+    virtual QList<ScenarioNode> GetSuccessors(const QString& nodeId) const = 0;
+    virtual QList<ScenarioNode> GetPredecessors(const QString& nodeId) const = 0;
+    virtual QList<ScenarioNode> GetRootNodes() const = 0;
+    virtual QList<ScenarioNode> GetTopologicalOrder() const = 0;
 
     // Validation
     virtual bool IsValid() const = 0;
     virtual bool HasCycles() const = 0;
 
     // Serialization
-    virtual std::string ToJson() const = 0;
-    virtual bool FromJson(const std::string& json) = 0;
+    virtual QString ToJson() const = 0;
+    virtual bool FromJson(const QString& json) = 0;
 };
 
 typedef istd::TUniqueInterfacePtr<IScenarioGraph> IScenarioGraphUniquePtr;

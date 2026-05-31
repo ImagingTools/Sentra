@@ -4,44 +4,44 @@
 namespace imtsentragql
 {
 
-std::string CScenarioServiceControllerComp::ListScenarios(const std::string& projectId) const {
+QString CScenarioServiceControllerComp::ListScenarios(const QString& projectId) const {
     // TODO: Query scenarios from storage
-    return "[]";
+    return QStringLiteral("[]");
 }
 
-std::string CScenarioServiceControllerComp::GetScenario(const std::string& scenarioId) const {
+QString CScenarioServiceControllerComp::GetScenario(const QString& scenarioId) const {
     // TODO: Load scenario from storage
-    return "{}";
+    return QStringLiteral("{}");
 }
 
-std::string CScenarioServiceControllerComp::CreateScenario(const std::string& input) {
+QString CScenarioServiceControllerComp::CreateScenario(const QString& input) {
     // TODO: Create and store scenario
-    return "{}";
+    return QStringLiteral("{}");
 }
 
-std::string CScenarioServiceControllerComp::UpdateScenario(const std::string& scenarioId, const std::string& input) {
+QString CScenarioServiceControllerComp::UpdateScenario(const QString& scenarioId, const QString& input) {
     // TODO: Update scenario
-    return "{}";
+    return QStringLiteral("{}");
 }
 
-bool CScenarioServiceControllerComp::DeleteScenario(const std::string& scenarioId) {
+bool CScenarioServiceControllerComp::DeleteScenario(const QString& scenarioId) {
     // TODO: Delete scenario
     return false;
 }
 
-std::string CScenarioServiceControllerComp::DuplicateScenario(const std::string& scenarioId) {
+QString CScenarioServiceControllerComp::DuplicateScenario(const QString& scenarioId) {
     // TODO: Duplicate scenario
-    return "{}";
+    return QStringLiteral("{}");
 }
 
-std::string CScenarioServiceControllerComp::ExportScenario(const std::string& scenarioId, const std::string& format) const {
+QString CScenarioServiceControllerComp::ExportScenario(const QString& scenarioId, const QString& format) const {
     // TODO: Export scenario in given format (json/yaml)
-    return "{}";
+    return QStringLiteral("{}");
 }
 
-std::string CScenarioServiceControllerComp::ImportScenario(const std::string& data, const std::string& format) {
+QString CScenarioServiceControllerComp::ImportScenario(const QString& data, const QString& format) {
     // TODO: Import scenario
-    return "{}";
+    return QStringLiteral("{}");
 }
 
 } // namespace imtsentragql

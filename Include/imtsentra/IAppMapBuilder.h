@@ -5,9 +5,11 @@
 #include <istd/IPolymorphic.h>
 #include <istd/TUniqueInterfacePtr.h>
 
+// Qt includes
+#include <QtCore/QString>
+#include <QtCore/QList>
+
 // Standard includes
-#include <string>
-#include <vector>
 #include <optional>
 
 namespace imtsentra
@@ -17,13 +19,13 @@ namespace imtsentra
  * \brief Represents a screen/page in the application map
  */
 struct AppScreen {
-    std::string id;
-    std::string url;
-    std::string title;
-    std::optional<std::string> screenshotPath;
-    std::vector<std::string> elements;
-    std::string discoveredAt;
-    std::string lastSeenAt;
+    QString id;
+    QString url;
+    QString title;
+    std::optional<QString> screenshotPath;
+    QList<QString> elements;
+    QString discoveredAt;
+    QString lastSeenAt;
     int visitCount = 0;
 };
 
@@ -31,12 +33,12 @@ struct AppScreen {
  * \brief Represents a transition between screens
  */
 struct AppTransition {
-    std::string id;
-    std::string sourceScreenId;
-    std::string targetScreenId;
-    std::string action;
-    std::optional<std::string> label;
-    std::string discoveredAt;
+    QString id;
+    QString sourceScreenId;
+    QString targetScreenId;
+    QString action;
+    std::optional<QString> label;
+    QString discoveredAt;
 };
 
 /**
@@ -57,9 +59,9 @@ public:
      * \param screenshotPath Optional screenshot of the screen
      */
     virtual void RecordScreen(
-        const std::string& url,
-        const std::string& title,
-        const std::optional<std::string>& screenshotPath = std::nullopt
+        const QString& url,
+        const QString& title,
+        const std::optional<QString>& screenshotPath = std::nullopt
     ) = 0;
 
     /**
@@ -69,25 +71,25 @@ public:
      * \param action Description of the action that caused the transition
      */
     virtual void RecordTransition(
-        const std::string& fromUrl,
-        const std::string& toUrl,
-        const std::string& action
+        const QString& fromUrl,
+        const QString& toUrl,
+        const QString& action
     ) = 0;
 
     /**
      * \brief Get all discovered screens
      */
-    virtual std::vector<AppScreen> GetScreens() const = 0;
+    virtual QList<AppScreen> GetScreens() const = 0;
 
     /**
      * \brief Get all discovered transitions
      */
-    virtual std::vector<AppTransition> GetTransitions() const = 0;
+    virtual QList<AppTransition> GetTransitions() const = 0;
 
     /**
      * \brief Get screens that have no test scenarios covering them
      */
-    virtual std::vector<AppScreen> GetUntestedScreens() const = 0;
+    virtual QList<AppScreen> GetUntestedScreens() const = 0;
 
     /**
      * \brief Calculate test coverage percentage
@@ -97,7 +99,7 @@ public:
     /**
      * \brief Export app map as JSON
      */
-    virtual std::string ToJson() const = 0;
+    virtual QString ToJson() const = 0;
 };
 
 typedef istd::TUniqueInterfacePtr<IAppMapBuilder> IAppMapBuilderUniquePtr;

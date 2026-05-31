@@ -7,6 +7,9 @@
 // ImtSentra includes
 #include <imtsentra/IScreenshotStorage.h>
 
+// Qt includes
+#include <QtCore/QString>
+
 namespace imtsentra
 {
 
@@ -31,50 +34,50 @@ public:
     I_END_COMPONENT
 
     // reimplemented (imtsentra::IScreenshotStorage)
-    std::string StoreExecutionScreenshot(
-        const std::string& executionId,
-        const std::string& nodeId,
+    QString StoreExecutionScreenshot(
+        const QString& executionId,
+        const QString& nodeId,
         const iimg::IBitmap& bitmap
     ) override;
 
-    std::string StoreBaselineScreenshot(
-        const std::string& scenarioId,
-        const std::string& nodeId,
+    QString StoreBaselineScreenshot(
+        const QString& scenarioId,
+        const QString& nodeId,
         const iimg::IBitmap& bitmap
     ) override;
 
-    std::string StoreDiffImage(
-        const std::string& executionId,
-        const std::string& nodeId,
+    QString StoreDiffImage(
+        const QString& executionId,
+        const QString& nodeId,
         const iimg::IBitmap& bitmap
     ) override;
 
     std::shared_ptr<iimg::IBitmap> LoadScreenshot(
-        const std::string& path
+        const QString& path
     ) const override;
 
-    std::optional<std::string> GetExecutionScreenshotPath(
-        const std::string& executionId,
-        const std::string& nodeId
+    std::optional<QString> GetExecutionScreenshotPath(
+        const QString& executionId,
+        const QString& nodeId
     ) const override;
 
-    std::optional<std::string> GetBaselineScreenshotPath(
-        const std::string& scenarioId,
-        const std::string& nodeId
+    std::optional<QString> GetBaselineScreenshotPath(
+        const QString& scenarioId,
+        const QString& nodeId
     ) const override;
 
-    void DeleteExecutionArtifacts(const std::string& executionId) override;
-    size_t GetTotalStorageSize() const override;
+    void DeleteExecutionArtifacts(const QString& executionId) override;
+    qint64 GetTotalStorageSize() const override;
 
 protected:
     // reimplemented (icomp::CComponentBase)
     void OnComponentCreated() override;
 
 private:
-    std::string m_basePath;
+    QString m_basePath;
 
-    std::string EnsureDirectory(const std::string& path) const;
-    bool SaveBitmap(const iimg::IBitmap& bitmap, const std::string& path) const;
+    QString EnsureDirectory(const QString& path) const;
+    bool SaveBitmap(const iimg::IBitmap& bitmap, const QString& path) const;
 
     I_TEXTATTR(m_basePathAttrPtr);
 };

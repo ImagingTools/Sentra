@@ -7,9 +7,11 @@
 // ImtSentra includes
 #include <imtsentra/IBaselineManager.h>
 
-// Standard includes
-#include <unordered_map>
-#include <mutex>
+// Qt includes
+#include <QtCore/QHash>
+#include <QtCore/QList>
+#include <QtCore/QMutex>
+#include <QtCore/QString>
 
 namespace imtsentra
 {
@@ -35,39 +37,39 @@ public:
 
     // reimplemented (imtsentra::IBaselineManager)
     std::optional<BaselineEntry> GetBaseline(
-        const std::string& scenarioId,
-        const std::string& nodeId
+        const QString& scenarioId,
+        const QString& nodeId
     ) const override;
 
     BaselineEntry SetBaseline(
-        const std::string& scenarioId,
-        const std::string& nodeId,
-        const std::string& screenshotPath
+        const QString& scenarioId,
+        const QString& nodeId,
+        const QString& screenshotPath
     ) override;
 
     void ApplyDecision(
-        const std::string& baselineId,
+        const QString& baselineId,
         BaselineDecision decision,
-        const std::string& decidedBy
+        const QString& decidedBy
     ) override;
 
-    std::vector<BaselineEntry> GetBaselines(const std::string& scenarioId) const override;
+    QList<BaselineEntry> GetBaselines(const QString& scenarioId) const override;
 
-    std::vector<BaselineEntry> GetHistory(
-        const std::string& scenarioId,
-        const std::string& nodeId
+    QList<BaselineEntry> GetHistory(
+        const QString& scenarioId,
+        const QString& nodeId
     ) const override;
 
     BaselineStrategy GetStrategy() const override;
     void SetStrategy(BaselineStrategy strategy) override;
 
 private:
-    mutable std::mutex m_mutex;
+    mutable QMutex m_mutex;
     BaselineStrategy m_strategy = BS_MANUAL;
     // Key: "scenarioId/nodeId"
-    std::unordered_map<std::string, std::vector<BaselineEntry>> m_baselines;
+    QHash<QString, QList<BaselineEntry>> m_baselines;
 
-    std::string MakeKey(const std::string& scenarioId, const std::string& nodeId) const;
+    QString MakeKey(const QString& scenarioId, const QString& nodeId) const;
 };
 
 } // namespace imtsentra

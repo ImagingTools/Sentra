@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #pragma once
 
-#include <string>
-#include <vector>
+// Qt includes
+#include <QtCore/QString>
+#include <QtCore/QList>
+
+// Standard includes
 #include <optional>
 
 namespace imtsentra
@@ -13,12 +16,12 @@ namespace imtsentra
  */
 struct IntentResolution {
     bool resolved;
-    std::string selector;
-    std::optional<std::string> coordinates;  // "x,y"
-    std::string actionType;
+    QString selector;
+    std::optional<QString> coordinates;  // "x,y"
+    QString actionType;
     float confidence;
-    std::string explanation;
-    std::optional<std::string> fallbackSelector;
+    QString explanation;
+    std::optional<QString> fallbackSelector;
 };
 
 /**
@@ -27,17 +30,17 @@ struct IntentResolution {
 struct AiValidationResult {
     bool passed;
     float confidence;
-    std::string explanation;
-    std::vector<std::string> findings;
+    QString explanation;
+    QList<QString> findings;
 };
 
 /**
  * \brief AI action suggestion
  */
 struct ActionSuggestion {
-    std::string description;
-    std::string nodeType;
-    std::string config;
+    QString description;
+    QString nodeType;
+    QString config;
     float relevanceScore;
 };
 
@@ -60,10 +63,10 @@ public:
      * \return Resolution result with selector and confidence
      */
     virtual IntentResolution ResolveIntent(
-        const std::string& description,
-        const std::string& domSnapshot,
-        const std::string& accessibilityTree,
-        const std::string& screenshotBase64
+        const QString& description,
+        const QString& domSnapshot,
+        const QString& accessibilityTree,
+        const QString& screenshotBase64
     ) = 0;
 
     /**
@@ -74,9 +77,9 @@ public:
      * \return Validation result with confidence and explanation
      */
     virtual AiValidationResult Validate(
-        const std::string& assertion,
-        const std::string& screenshotBase64,
-        const std::string& semanticSnapshot
+        const QString& assertion,
+        const QString& screenshotBase64,
+        const QString& semanticSnapshot
     ) = 0;
 
     /**
@@ -85,15 +88,15 @@ public:
      * \param goal Optional test goal description
      * \return List of suggested actions
      */
-    virtual std::vector<ActionSuggestion> SuggestActions(
-        const std::string& currentState,
-        const std::optional<std::string>& goal = std::nullopt
+    virtual QList<ActionSuggestion> SuggestActions(
+        const QString& currentState,
+        const std::optional<QString>& goal = std::nullopt
     ) = 0;
 
     /**
      * \brief Get provider name (e.g., "openai", "anthropic")
      */
-    virtual std::string GetProviderName() const = 0;
+    virtual QString GetProviderName() const = 0;
 
     /**
      * \brief Check if the provider is available and configured

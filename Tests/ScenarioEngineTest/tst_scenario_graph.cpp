@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later OR GPL-2.0-or-later OR GPL-3.0-or-later OR LicenseRef-ImtCore-Commercial
 #include <cassert>
 #include <iostream>
-#include <string>
+#include <QtCore/QString>
 #include <imtsentra/CScenarioGraphComp.h>
 
 using namespace imtsentra;
@@ -152,9 +152,9 @@ void testJsonSerialization() {
     graph.AddNode(n1);
 
     auto json = graph.ToJson();
-    assert(!json.empty());
-    assert(json.find("Login Flow") != std::string::npos);
-    assert(json.find("n1") != std::string::npos);
+    assert(!json.isEmpty());
+    assert(json.contains("Login Flow"));
+    assert(json.contains("n1"));
 
     std::cout << "  [PASS] testJsonSerialization" << std::endl;
 }

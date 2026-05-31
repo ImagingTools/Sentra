@@ -5,10 +5,8 @@
 #include <icomp/CComponentBase.h>
 #include <istd/IPolymorphic.h>
 
-// Standard includes
-#include <string>
-#include <vector>
-#include <optional>
+// Qt includes
+#include <QtCore/QString>
 
 namespace imtsentragql
 {
@@ -36,18 +34,18 @@ public:
     I_END_COMPONENT
 
     // Query resolvers
-    std::string ListScenarios(const std::string& projectId) const;
-    std::string GetScenario(const std::string& scenarioId) const;
+    QString ListScenarios(const QString& projectId) const;
+    QString GetScenario(const QString& scenarioId) const;
 
     // Mutation resolvers
-    std::string CreateScenario(const std::string& input);
-    std::string UpdateScenario(const std::string& scenarioId, const std::string& input);
-    bool DeleteScenario(const std::string& scenarioId);
-    std::string DuplicateScenario(const std::string& scenarioId);
+    QString CreateScenario(const QString& input);
+    QString UpdateScenario(const QString& scenarioId, const QString& input);
+    bool DeleteScenario(const QString& scenarioId);
+    QString DuplicateScenario(const QString& scenarioId);
 
     // Import/Export
-    std::string ExportScenario(const std::string& scenarioId, const std::string& format) const;
-    std::string ImportScenario(const std::string& data, const std::string& format);
+    QString ExportScenario(const QString& scenarioId, const QString& format) const;
+    QString ImportScenario(const QString& data, const QString& format);
 };
 
 } // namespace imtsentragql

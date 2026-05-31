@@ -7,6 +7,9 @@
 // ImtSentra includes
 #include <imtsentra/IImageComparator.h>
 
+// Qt includes
+#include <QtCore/QList>
+
 namespace imtsentra
 {
 
@@ -50,7 +53,7 @@ private:
     /**
      * \brief Check whether a pixel coordinate falls within any ignore region
      */
-    bool IsInIgnoreRegion(int x, int y, const std::vector<IgnoreRegion>& regions) const;
+    bool IsInIgnoreRegion(int x, int y, const QList<IgnoreRegion>& regions) const;
 };
 
 } // namespace imtsentra

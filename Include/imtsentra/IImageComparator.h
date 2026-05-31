@@ -7,9 +7,11 @@
 #include <istd/IPolymorphic.h>
 #include <istd/TUniqueInterfacePtr.h>
 
+// Qt includes
+#include <QtCore/QString>
+#include <QtCore/QList>
+
 // Standard includes
-#include <string>
-#include <vector>
 #include <optional>
 
 namespace imtsentra
@@ -41,7 +43,7 @@ struct IgnoreRegion {
     int y;
     int width;
     int height;
-    std::optional<std::string> reason;
+    std::optional<QString> reason;
 };
 
 /**
@@ -50,7 +52,7 @@ struct IgnoreRegion {
 struct ComparisonConfig {
     ComparisonAlgorithm algorithm = CA_PIXEL_DIFF;
     float threshold = 0.01f;  // 1% difference threshold
-    std::vector<IgnoreRegion> ignoreRegions;
+    QList<IgnoreRegion> ignoreRegions;
     bool antiAliasingTolerance = true;
 };
 
@@ -60,10 +62,10 @@ struct ComparisonConfig {
 struct ComparisonResult {
     bool matches;
     float diffPercentage;
-    std::string diffImagePath;
+    QString diffImagePath;
     int changedPixels;
     int totalPixels;
-    std::vector<IgnoreRegion> detectedChanges;
+    QList<IgnoreRegion> detectedChanges;
 };
 
 /**

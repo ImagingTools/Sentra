@@ -6,11 +6,12 @@
 #include <istd/IPolymorphic.h>
 #include <istd/TUniqueInterfacePtr.h>
 
+// Qt includes
+#include <QtCore/QString>
+#include <QtCore/QList>
+
 // Standard includes
-#include <string>
-#include <vector>
 #include <memory>
-#include <functional>
 
 namespace imtsentra
 {
@@ -45,7 +46,7 @@ public:
      * \param config Execution configuration
      * \return Execution ID
      */
-    virtual std::string QueueExecution(
+    virtual QString QueueExecution(
         std::shared_ptr<IScenarioGraph> graph,
         const ExecutionConfig& config
     ) = 0;
@@ -56,15 +57,15 @@ public:
      * \param config Shared execution configuration
      * \return List of execution IDs
      */
-    virtual std::vector<std::string> QueueParallelExecution(
-        const std::vector<std::shared_ptr<IScenarioGraph>>& graphs,
+    virtual QList<QString> QueueParallelExecution(
+        const QList<std::shared_ptr<IScenarioGraph>>& graphs,
         const ExecutionConfig& config
     ) = 0;
 
     /**
      * \brief Cancel a queued or running execution
      */
-    virtual void CancelExecution(const std::string& executionId) = 0;
+    virtual void CancelExecution(const QString& executionId) = 0;
 
     /**
      * \brief Get the number of currently running executions

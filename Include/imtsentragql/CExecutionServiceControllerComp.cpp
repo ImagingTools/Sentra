@@ -4,41 +4,41 @@
 namespace imtsentragql
 {
 
-std::string CExecutionServiceControllerComp::GetExecution(const std::string& executionId) const {
+QString CExecutionServiceControllerComp::GetExecution(const QString& executionId) const {
     // TODO: Get execution details
-    return "{}";
+    return QStringLiteral("{}");
 }
 
-std::string CExecutionServiceControllerComp::GetNodeResult(const std::string& executionId, const std::string& nodeId) const {
+QString CExecutionServiceControllerComp::GetNodeResult(const QString& executionId, const QString& nodeId) const {
     // TODO: Get specific node result
-    return "{}";
+    return QStringLiteral("{}");
 }
 
-std::string CExecutionServiceControllerComp::ListExecutions(const std::string& scenarioId) const {
+QString CExecutionServiceControllerComp::ListExecutions(const QString& scenarioId) const {
     // TODO: List executions for scenario
-    return "[]";
+    return QStringLiteral("[]");
 }
 
-std::string CExecutionServiceControllerComp::ExecuteScenario(const std::string& scenarioId, const std::string& configJson) {
+QString CExecutionServiceControllerComp::ExecuteScenario(const QString& scenarioId, const QString& configJson) {
     // TODO: Start scenario execution
-    return "{}";
+    return QStringLiteral("{}");
 }
 
-bool CExecutionServiceControllerComp::StopExecution(const std::string& executionId) {
+bool CExecutionServiceControllerComp::StopExecution(const QString& executionId) {
     // TODO: Stop execution
     return false;
 }
 
-std::string CExecutionServiceControllerComp::RetryExecution(const std::string& executionId, const std::string& fromNodeId) {
+QString CExecutionServiceControllerComp::RetryExecution(const QString& executionId, const QString& fromNodeId) {
     // TODO: Retry from node
-    return "{}";
+    return QStringLiteral("{}");
 }
 
-void CExecutionServiceControllerComp::SubscribeExecutionProgress(const std::string& executionId, ProgressHandler handler) {
+void CExecutionServiceControllerComp::SubscribeExecutionProgress(const QString& executionId, ProgressHandler handler) {
     // TODO: Register subscription
 }
 
-void CExecutionServiceControllerComp::SubscribeNodeCompleted(const std::string& executionId, ProgressHandler handler) {
+void CExecutionServiceControllerComp::SubscribeNodeCompleted(const QString& executionId, ProgressHandler handler) {
     // TODO: Register subscription
 }
 

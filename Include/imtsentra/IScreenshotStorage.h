@@ -6,11 +6,12 @@
 #include <istd/IPolymorphic.h>
 #include <istd/TUniqueInterfacePtr.h>
 
+// Qt includes
+#include <QtCore/QString>
+#include <QtCore/QtGlobal>
+
 // Standard includes
-#include <string>
-#include <vector>
 #include <optional>
-#include <cstdint>
 #include <memory>
 
 namespace imtsentra
@@ -37,27 +38,27 @@ public:
      * \param bitmap Bitmap to store
      * \return Path where the screenshot was stored
      */
-    virtual std::string StoreExecutionScreenshot(
-        const std::string& executionId,
-        const std::string& nodeId,
+    virtual QString StoreExecutionScreenshot(
+        const QString& executionId,
+        const QString& nodeId,
         const iimg::IBitmap& bitmap
     ) = 0;
 
     /**
      * \brief Store a baseline screenshot
      */
-    virtual std::string StoreBaselineScreenshot(
-        const std::string& scenarioId,
-        const std::string& nodeId,
+    virtual QString StoreBaselineScreenshot(
+        const QString& scenarioId,
+        const QString& nodeId,
         const iimg::IBitmap& bitmap
     ) = 0;
 
     /**
      * \brief Store a diff image
      */
-    virtual std::string StoreDiffImage(
-        const std::string& executionId,
-        const std::string& nodeId,
+    virtual QString StoreDiffImage(
+        const QString& executionId,
+        const QString& nodeId,
         const iimg::IBitmap& bitmap
     ) = 0;
 
@@ -67,34 +68,34 @@ public:
      * \return Loaded bitmap, or nullptr on failure
      */
     virtual std::shared_ptr<iimg::IBitmap> LoadScreenshot(
-        const std::string& path
+        const QString& path
     ) const = 0;
 
     /**
      * \brief Get path to execution screenshot
      */
-    virtual std::optional<std::string> GetExecutionScreenshotPath(
-        const std::string& executionId,
-        const std::string& nodeId
+    virtual std::optional<QString> GetExecutionScreenshotPath(
+        const QString& executionId,
+        const QString& nodeId
     ) const = 0;
 
     /**
      * \brief Get path to baseline screenshot
      */
-    virtual std::optional<std::string> GetBaselineScreenshotPath(
-        const std::string& scenarioId,
-        const std::string& nodeId
+    virtual std::optional<QString> GetBaselineScreenshotPath(
+        const QString& scenarioId,
+        const QString& nodeId
     ) const = 0;
 
     /**
      * \brief Delete all artifacts for an execution
      */
-    virtual void DeleteExecutionArtifacts(const std::string& executionId) = 0;
+    virtual void DeleteExecutionArtifacts(const QString& executionId) = 0;
 
     /**
      * \brief Get total storage size in bytes
      */
-    virtual size_t GetTotalStorageSize() const = 0;
+    virtual qint64 GetTotalStorageSize() const = 0;
 };
 
 typedef istd::TUniqueInterfacePtr<IScreenshotStorage> IScreenshotStorageUniquePtr;

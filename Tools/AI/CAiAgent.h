@@ -2,8 +2,14 @@
 #pragma once
 
 #include <imtsentra/IAiProvider.h>
-#include <unordered_map>
-#include <mutex>
+
+// Qt includes
+#include <QtCore/QHash>
+#include <QtCore/QMutex>
+#include <QtCore/QString>
+
+// Standard includes
+#include <memory>
 
 namespace imtsentra
 {
@@ -22,12 +28,12 @@ public:
     /**
      * \brief Register an AI provider
      */
-    void RegisterProvider(const std::string& name, std::unique_ptr<IAiProvider> provider);
+    void RegisterProvider(const QString& name, std::unique_ptr<IAiProvider> provider);
 
     /**
      * \brief Set the active provider
      */
-    void SetActiveProvider(const std::string& name);
+    void SetActiveProvider(const QString& name);
 
     /**
      * \brief Resolve intent with retry and fallback logic
@@ -39,27 +45,27 @@ public:
      * 4. CSS selector fallback
      */
     IntentResolution ResolveIntent(
-        const std::string& description,
-        const std::string& domSnapshot,
-        const std::string& accessibilityTree,
-        const std::string& screenshotBase64
+        const QString& description,
+        const QString& domSnapshot,
+        const QString& accessibilityTree,
+        const QString& screenshotBase64
     );
 
     /**
      * \brief Validate assertion with AI
      */
     AiValidationResult Validate(
-        const std::string& assertion,
-        const std::string& screenshotBase64,
-        const std::string& semanticSnapshot
+        const QString& assertion,
+        const QString& screenshotBase64,
+        const QString& semanticSnapshot
     );
 
     /**
      * \brief Suggest actions for current state
      */
-    std::vector<ActionSuggestion> SuggestActions(
-        const std::string& currentState,
-        const std::optional<std::string>& goal = std::nullopt
+    QList<ActionSuggestion> SuggestActions(
+        const QString& currentState,
+        const std::optional<QString>& goal = std::nullopt
     );
 
     /**
@@ -73,15 +79,15 @@ public:
     void SetMaxRetries(int retries);
 
 private:
-    std::unordered_map<std::string, std::unique_ptr<IAiProvider>> m_providers;
-    std::string m_activeProvider;
+    QHash<QString, std::unique_ptr<IAiProvider>> m_providers;
+    QString m_activeProvider;
     int m_maxRetries = 3;
-    mutable std::mutex m_mutex;
+    mutable QMutex m_mutex;
 
     // Cache: key → response
-    std::unordered_map<std::string, IntentResolution> m_intentCache;
+    QHash<QString, IntentResolution> m_intentCache;
 
-    std::string MakeCacheKey(const std::string& description, const std::string& domHash) const;
+    QString MakeCacheKey(const QString& description, const QString& domHash) const;
     IAiProvider* GetProvider() const;
 };
 

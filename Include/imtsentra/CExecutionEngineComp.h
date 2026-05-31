@@ -7,12 +7,20 @@
 // ImtSentra includes
 #include <imtsentra/IExecutionEngine.h>
 
+// Qt includes
+#include <QtCore/QAtomicInt>
+#include <QtCore/QList>
+#include <QtCore/QMutex>
+#include <QtCore/QQueue>
+#include <QtCore/QString>
+#include <QtCore/QWaitCondition>
+
 // Standard includes
-#include <mutex>
-#include <queue>
-#include <thread>
-#include <condition_variable>
-#include <atomic>
+#include <memory>
+
+QT_BEGIN_NAMESPACE
+class QThread;
+QT_END_NAMESPACE
 
 namespace imtsentra
 {
@@ -37,17 +45,17 @@ public:
     I_END_COMPONENT
 
     // reimplemented (imtsentra::IExecutionEngine)
-    std::string QueueExecution(
+    QString QueueExecution(
         std::shared_ptr<IScenarioGraph> graph,
         const ExecutionConfig& config
     ) override;
 
-    std::vector<std::string> QueueParallelExecution(
-        const std::vector<std::shared_ptr<IScenarioGraph>>& graphs,
+    QList<QString> QueueParallelExecution(
+        const QList<std::shared_ptr<IScenarioGraph>>& graphs,
         const ExecutionConfig& config
     ) override;
 
-    void CancelExecution(const std::string& executionId) override;
+    void CancelExecution(const QString& executionId) override;
     int GetActiveExecutionCount() const override;
     EngineConfig GetConfig() const override;
     void SetConfig(const EngineConfig& config) override;
@@ -68,21 +76,21 @@ protected:
 
 private:
     struct QueuedExecution {
-        std::string id;
+        QString id;
         std::shared_ptr<IScenarioGraph> graph;
         ExecutionConfig config;
     };
 
     EngineConfig m_config;
-    mutable std::mutex m_mutex;
-    std::queue<QueuedExecution> m_queue;
-    std::vector<std::thread> m_workers;
-    std::condition_variable m_cv;
-    std::atomic<bool> m_running{false};
-    std::atomic<int> m_activeCount{0};
+    mutable QMutex m_mutex;
+    QQueue<QueuedExecution> m_queue;
+    QList<QThread*> m_workers;
+    QWaitCondition m_cv;
+    QAtomicInt m_running{0};
+    QAtomicInt m_activeCount{0};
 
     void WorkerLoop();
-    std::string GenerateId() const;
+    QString GenerateId() const;
 };
 
 } // namespace imtsentra

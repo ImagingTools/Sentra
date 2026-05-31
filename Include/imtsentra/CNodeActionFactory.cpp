@@ -13,7 +13,7 @@ CNodeActionFactory::~CNodeActionFactory() = default;
 std::unique_ptr<INodeAction> CNodeActionFactory::CreateAction(NodeType type) const {
     auto it = m_creators.find(static_cast<int>(type));
     if (it != m_creators.end()) {
-        return it->second();
+        return it.value()();
     }
     return nullptr;
 }
@@ -23,7 +23,7 @@ void CNodeActionFactory::RegisterAction(NodeType type, ActionCreator creator) {
 }
 
 bool CNodeActionFactory::HasAction(NodeType type) const {
-    return m_creators.count(static_cast<int>(type)) > 0;
+    return m_creators.contains(static_cast<int>(type));
 }
 
 void CNodeActionFactory::RegisterDefaultActions() {
